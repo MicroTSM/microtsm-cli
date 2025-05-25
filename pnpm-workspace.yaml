@@ -1,0 +1,3 @@
+packages:
+  - '.' # Include root as a workspace package
+  - 'playground/*' # Include all subfolders in playground/

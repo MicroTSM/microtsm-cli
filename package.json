@@ -1,0 +1,56 @@
+{
+  "name": "single-spa-vite-cli-service",
+  "private": true,
+  "version": "0.0.0",
+  "description": "CLI tool to simplify Vite + Vue + Single-SPA development",
+  "type": "module",
+  "bin": {
+    "single-spa-vite-cli-service": "dist/bin/cli.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "types": "./dist/main.d.ts",
+  "module": "./dist/main.js",
+  "exports": {
+    ".": {
+      "import": "./dist/main.js",
+      "types": "./dist/main.d.ts"
+    },
+    "./utils": {
+      "types": "./dist/utils/index.d.ts",
+      "import": "./dist/utils/index.js"
+    }
+  },
+  "scripts": {
+    "build": "vite build",
+    "test": "vitest",
+    "clean": "rm -r dist --force",
+    "build.watch": "clear && vite build --watch",
+    "mfe.build": "nodemon --exec \"wait-on dist/bin/cli.js && pnpm --filter vue-mfe-app run build\"",
+    "mfe.dev": "nodemon --exec \"wait-on dist/bin/cli.js && pnpm --filter vue-mfe-app run dev\"",
+    "mfe.serve.https": "nodemon --exec \"wait-on dist/bin/cli.js &&  pnpm --filter vue-mfe-app run serve.https\"",
+    "dev.cli.build": "pnpm clean && concurrently --colors -n CLI,MFE -c blue,yellow -k \"pnpm build.watch\" \"pnpm mfe.build\" --kill-others-on-fail",
+    "dev.cli.dev": "pnpm clean && concurrently --colors -n CLI,MFE -c blue,yellow -k \"pnpm build.watch\" \"pnpm mfe.dev\" --kill-others-on-fail"
+  },
+  "devDependencies": {
+    "@types/ejs": "^3.1.5",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^22.15.21",
+    "@vitejs/plugin-basic-ssl": "^2.0.0",
+    "cac": "^6.7.14",
+    "concurrently": "^9.1.2",
+    "ejs": "^3.1.10",
+    "prettier": "3.5.3",
+    "terser": "^5.39.2",
+    "typescript": "~5.8.3",
+    "vite-plugin-dts": "^4.5.4",
+    "vitest": "^3.1.4",
+    "wait-on": "^8.0.3"
+  },
+  "dependencies": {
+    "vite": "^6.3.5"
+  }
+}

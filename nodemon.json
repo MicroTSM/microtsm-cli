@@ -1,0 +1,13 @@
+{
+  "verbose": true,
+  "execMap": { "js": "node --harmony" },
+  "ignore": [".git", "playground/**/dist/**", "**/node_modules/**"],
+  "watch": [
+    "dist/bin",
+    "playground/mfe-app/src/**/*",
+    "playground/mfe-app/public/**/*",
+    "playground/mfe-app/*.{js,ts,json}"
+  ],
+  "env": { "NODE_ENV": "development" },
+  "ext": "js,vue,html,ts"
+}
