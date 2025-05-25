@@ -25,6 +25,7 @@ export default defineConfig({
       external: ['path', 'fs', 'url', 'child_process', 'vite'],
     },
   },
+  publicDir: 'static',
   plugins: [dts({ entryRoot: './src', outDir: 'dist', tsconfigPath: './tsconfig.json', exclude: ['**/*.test.ts'] })],
-  server: { watch: { ignored: ['**/playground/**'] } },
+  server: { watch: { ignored: ['**/playground/**', 'dist'] } },
 });
