@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { cac } from 'cac';
-import { BuildEnvironmentOptions } from 'vite';
+import { BuildEnvironmentOptions, createLogger } from 'vite';
 import {
   BuilderCLIOptions,
   CLIBuildOptions,
@@ -8,15 +8,18 @@ import {
   GlobalCLIOptions,
   ServeCommandCLIOptions,
 } from '../src/types/cli';
-import { readFileSync } from 'fs';
-import { resolve } from 'path';
+import colors from 'picocolors';
 
 import buildCommand from '../src/commands/build';
 import serveCommand from '../src/commands/serve';
+import getVersion from '../src/utils/getVersion';
+import { performance } from 'node:perf_hooks';
 
-const { version: VERSION } = JSON.parse(readFileSync(resolve(process.cwd(), 'package.json'), 'utf-8'));
+const VERSION = getVersion();
 
-const cli = cac('microtsm-cli');
+const cli = cac('microtsm');
+
+global.__vite_start_time = performance.now();
 
 /**
  * base may be a number (like 0), should convert to empty string
@@ -136,7 +139,15 @@ cli
     filterDuplicateOptions(options);
     const buildOptions: BuildEnvironmentOptions = cleanGlobalCLIOptions(cleanBuilderCLIOptions(options));
 
-    await buildCommand(root, options, buildOptions);
+    try {
+      await buildCommand(root, options, buildOptions);
+    } catch (e: any) {
+      const logger = createLogger(options.logLevel);
+      logger.error(colors.red(`Error during build:\n${e.stack}`), {
+        error: e,
+      });
+      process.exit(1);
+    }
   });
 
 cli
@@ -148,11 +159,20 @@ cli
   .option('--open [path]', `[boolean | string] open browser on startup`)
   .option('--cors', `[boolean] enable CORS`)
   .option('--https', `[boolean] enable HTTPS`)
+  .option('--standalone', `[boolean] run app in Standalone Mode instead of Integrated Mode`)
   .option('--strictPort', `[boolean] exit if specified port is already in use`)
   .option('--force', `[boolean] force the optimizer to ignore the cache and re-bundle`)
   .action(async (root: string, options: CLIServeOptions) => {
     filterDuplicateOptions(options);
-    await serveCommand(root, options, cleanGlobalCLIOptions(cleanServeCommandCLIOptions(options)));
+    try {
+      await serveCommand(root, options, cleanGlobalCLIOptions(cleanServeCommandCLIOptions(options)));
+    } catch (e: any) {
+      const logger = createLogger(options.logLevel);
+      logger.error(colors.red(`Error when starting dev server:\n${e.stack}`), {
+        error: e,
+      });
+      process.exit(1);
+    }
   });
 
 cli.help();

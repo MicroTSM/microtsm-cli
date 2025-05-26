@@ -1,5 +1,5 @@
 import { fileURLToPath, URL } from 'node:url'
-import { defineConfig } from 'microtsm-cli'
+import { defineConfig } from '@microtsm/cli'
 import vue from '@vitejs/plugin-vue'
 
 export default defineConfig({

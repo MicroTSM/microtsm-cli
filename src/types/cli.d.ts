@@ -28,6 +28,10 @@ export interface ServeCommandCLIOptions {
    * This is useful for local development of micro-frontends that require HTTPS.
    */
   https?: boolean;
+  /**
+   * Run App in standalone mode.
+   */
+  standalone?: boolean;
 }
 
 export interface BuilderCLIOptions {

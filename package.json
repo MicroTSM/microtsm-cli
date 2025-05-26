@@ -1,5 +1,5 @@
 {
-  "name": "microtsm-cli",
+  "name": "@microtsm/cli",
   "private": true,
   "version": "0.0.0",
   "description": "CLI tool to simplify Vite + Vue + Single-SPA development",
@@ -42,6 +42,7 @@
     "wait-on": "^8.0.3"
   },
   "dependencies": {
-    "vite": "^6.3.5"
+    "vite": "^6.3.5",
+    "picocolors": "^1.1.1"
   }
 }

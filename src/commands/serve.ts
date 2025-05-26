@@ -3,6 +3,11 @@ import { CLIServeOptions } from '../types/cli';
 import resolveConfig from '../utils/resolveConfig';
 import viteBasicSslPlugin from '@vitejs/plugin-basic-ssl';
 import { generateIndexPage, getEntryFilePath } from '../utils/generateGuide';
+import { performance } from 'node:perf_hooks';
+import colors from 'picocolors';
+import getVersion from '../utils/getVersion';
+
+const VERSION = getVersion();
 
 function configureHTTPSServer(conf: InlineConfig): void {
   const CERT_NAME = 'serve';
@@ -13,9 +18,16 @@ function configureHTTPSServer(conf: InlineConfig): void {
   ];
 
   conf.server = {
+    ...conf.server,
     https: { key: `/Users/.../.devServer/cert/${CERT_NAME}.key`, cert: `/Users/.../.devServer/cert/${CERT_NAME}.crt` },
     cors: { origin: '*', credentials: true },
-    ...conf.server,
+  };
+}
+
+function defineStandaloneEnv(conf: InlineConfig, value: boolean): void {
+  conf.define = {
+    ...conf.define,
+    __MICROTSM_STANDALONE__: JSON.stringify(value),
   };
 }
 
@@ -26,7 +38,9 @@ export default async function serveCommand(root: string, options: CLIServeOption
     configureHTTPSServer(config);
   }
 
-  const server = await createServer({
+  defineStandaloneEnv(config, !!options.standalone);
+
+  const inlineConfig: InlineConfig = {
     ...config,
     root,
     base: options.base,
@@ -37,13 +51,36 @@ export default async function serveCommand(root: string, options: CLIServeOption
     server: config.server ? mergeConfig(serverOptions, config.server) : serverOptions,
     forceOptimizeDeps: options.force,
     configFile: false, // To tell vite to not manually load the config file, because we already did it
-  });
+  };
+
+  const server = await createServer(inlineConfig);
 
   if (!server.httpServer) {
     throw new Error('HTTP server not available');
   }
 
+  const info = server.config.logger.info;
+
+  const modeString =
+    options.mode && options.mode !== 'development' ? `  ${colors.bgGreen(` ${colors.bold(options.mode)} `)}` : '';
+
+  const viteStartTime = global.__vite_start_time ?? false;
+  const startupDurationString = viteStartTime
+    ? colors.dim(`ready in ${colors.reset(colors.bold(Math.ceil(performance.now() - viteStartTime)))} ms`)
+    : '';
+
+  const hasExistingLogs = process.stdout.bytesWritten > 0 || process.stderr.bytesWritten > 0;
+
+  info(`\n  ${colors.green(`${colors.bold('MicroTSM CLI')} v${VERSION}`)}${modeString}  ${startupDurationString}\n`, {
+    clear: !hasExistingLogs,
+  });
+
   await generateIndexPage({ entryFilePath: getEntryFilePath(config) });
   await server.listen();
+
+  if (server.resolvedUrls)
+    server.resolvedUrls.local = server.resolvedUrls?.local?.filter?.((url) => !url.includes('vite'));
+
   server.printUrls();
+  server.bindCLIShortcuts({ print: true });
 }

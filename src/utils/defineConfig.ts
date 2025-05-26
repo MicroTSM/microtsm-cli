@@ -17,7 +17,7 @@ export function isDefinedWithDefineConfig(config: UserConfig | undefined): boole
 }
 
 /**
- * Custom `defineConfig` wrapper for `microtsm-cli`.
+ * Custom `defineConfig` wrapper for `@microtsm/cli`.
  *
  * This function wraps Vite's native `defineConfig`, providing automatic enhancements
  * tailored for MicroApp development using `single-spa`.
@@ -44,7 +44,7 @@ export function isDefinedWithDefineConfig(config: UserConfig | undefined): boole
  *
  * 🧪 Example:
  * ```ts
- * import { defineConfig } from "microtsm-cli";
+ * import { defineConfig } from "@microtsm/cli";
  *
  * export default defineConfig(({ mode }) => ({
  *   plugins: [],

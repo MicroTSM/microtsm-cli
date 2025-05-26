@@ -14,6 +14,7 @@ const nodeBuiltInModules = [
   'node:fs',
   'node:events',
   'node:util',
+  'node:perf_hooks',
 ];
 
 export default defineConfig({
@@ -27,7 +28,7 @@ export default defineConfig({
     },
     rollupOptions: {
       input: {
-        cli: resolve(__dirname, 'bin/vite-single-spa-cli.ts'),
+        cli: resolve(__dirname, 'bin/microtsm-cli.ts'),
         lib: resolve(__dirname, 'src/main.ts'),
       },
       output: {
