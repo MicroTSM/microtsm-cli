@@ -1,4 +1,4 @@
-import { createServer, InlineConfig, mergeConfig, ServerOptions } from 'vite';
+import { createServer, InlineConfig, Logger, mergeConfig, ResolvedServerUrls, ServerOptions } from 'vite';
 import { CLIServeOptions } from '../types/cli';
 import resolveConfig from '../utils/resolveConfig';
 import viteBasicSslPlugin from '@vitejs/plugin-basic-ssl';
@@ -31,6 +31,23 @@ function defineStandaloneEnv(conf: InlineConfig, value: boolean): void {
   };
 }
 
+const printUrls = (info: Logger['info'], urls: ResolvedServerUrls) => {
+  const hasLocalUrls = urls.local.length > 0;
+  const hasNetworkUrls = urls.network.length > 0;
+
+  // Format Local Access
+  const localAccess = hasLocalUrls
+    ? `🔗 Local Access:\n${urls.local.map((url) => `   ➜  ${colors.green(url)}`).join('\n')}`
+    : '';
+
+  // Format Network Access
+  const networkAccess = hasNetworkUrls
+    ? `\n🌍 Network Access:\n${urls.network.map((url) => `   ➜  ${colors.cyan(url)}`).join('\n')}`
+    : `\n🌍 Network Access:\n   ➜  Use ${colors.yellow('--host')} to share externally`;
+
+  info(`${localAccess} \n ${networkAccess}\n`);
+};
+
 export default async function serveCommand(root: string, options: CLIServeOptions, serverOptions: ServerOptions) {
   let config = await resolveConfig('serve', root, options);
 
@@ -61,19 +78,19 @@ export default async function serveCommand(root: string, options: CLIServeOption
 
   const info = server.config.logger.info;
 
-  const modeString =
-    options.mode && options.mode !== 'development' ? `  ${colors.bgGreen(` ${colors.bold(options.mode)} `)}` : '';
-
   const viteStartTime = global.__vite_start_time ?? false;
-  const startupDurationString = viteStartTime
-    ? colors.dim(`ready in ${colors.reset(colors.bold(Math.ceil(performance.now() - viteStartTime)))} ms`)
+  const startupDuration = viteStartTime
+    ? colors.dim(`⚡ Ready in ${colors.reset(colors.bold(Math.ceil(performance.now() - viteStartTime)))} ms`)
     : '';
 
   const hasExistingLogs = process.stdout.bytesWritten > 0 || process.stderr.bytesWritten > 0;
 
-  info(`\n  ${colors.green(`${colors.bold('MicroTSM CLI')} v${VERSION}`)}${modeString}  ${startupDurationString}\n`, {
-    clear: !hasExistingLogs,
-  });
+  const cliVersion = colors.green(colors.bold(`MicroTSM CLI v${VERSION}`));
+  const appName = colors.cyan(colors.bold(config.define?.__APP_NAME__ ?? 'App'));
+  const liveMessage = `Your ${appName} is live!`;
+  const helpMessage = `💡 Need help? Press ${colors.yellow('h + Enter')}\n`;
+
+  info(`\n${cliVersion} ${startupDuration}\n\n${liveMessage.replaceAll('"', '')}\n`, { clear: !hasExistingLogs });
 
   await generateIndexPage({ entryFilePath: getEntryFilePath(config) });
   await server.listen();
@@ -81,6 +98,7 @@ export default async function serveCommand(root: string, options: CLIServeOption
   if (server.resolvedUrls)
     server.resolvedUrls.local = server.resolvedUrls?.local?.filter?.((url) => !url.includes('vite'));
 
-  server.printUrls();
-  server.bindCLIShortcuts({ print: true });
+  printUrls(info, server.resolvedUrls!);
+  info(helpMessage);
+  server.bindCLIShortcuts({ print: false });
 }
