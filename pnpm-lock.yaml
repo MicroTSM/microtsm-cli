@@ -55,7 +55,7 @@ importers:
 
   playground/vue-mfe-app:
     dependencies:
-      single-spa-vite-cli-service:
+      microtsm-cli:
         specifier: workspace:*
         version: link:../..
       vue:

@@ -4,17 +4,17 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "single-spa-vite-cli-service serve --standalone",
+    "dev": "microtsm serve --standalone",
     "dev.watch": "nodemon --exec \"pnpm dev\"",
-    "serve.https": "single-spa-vite-cli-service serve --https",
+    "serve.https": "microtsm serve --https",
     "serve.https.watch": "nodemon --exec \"pnpm serve.https\"",
-    "build": "single-spa-vite-cli-service build",
+    "build": "microtsm build",
     "build.watch": "nodemon --exec \"pnpm build\""
   },
   "dependencies": {
     "vue": "^3.5.13",
     "vue-router": "^4.5.0",
-    "single-spa-vite-cli-service": "workspace:*"
+    "microtsm-cli": "workspace:*"
   },
   "devDependencies": {
     "@tsconfig/node22": "^22.0.1",

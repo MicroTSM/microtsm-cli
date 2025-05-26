@@ -1,11 +1,11 @@
 {
-  "name": "single-spa-vite-cli-service",
+  "name": "microtsm-cli",
   "private": true,
   "version": "0.0.0",
   "description": "CLI tool to simplify Vite + Vue + Single-SPA development",
   "type": "module",
   "bin": {
-    "single-spa-vite-cli-service": "dist/bin/cli.js"
+    "microtsm": "dist/bin/cli.js"
   },
   "files": [
     "dist",

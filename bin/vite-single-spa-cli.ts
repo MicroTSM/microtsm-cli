@@ -16,7 +16,7 @@ import serveCommand from '../src/commands/serve';
 
 const { version: VERSION } = JSON.parse(readFileSync(resolve(process.cwd(), 'package.json'), 'utf-8'));
 
-const cli = cac('single-spa-vite-cli-service');
+const cli = cac('microtsm-cli');
 
 /**
  * base may be a number (like 0), should convert to empty string
