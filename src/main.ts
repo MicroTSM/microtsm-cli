@@ -1,1 +1,1 @@
-export * from './utils';
+export { defineConfig } from './utils';

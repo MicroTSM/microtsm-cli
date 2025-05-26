@@ -10,8 +10,6 @@ import {
 import path from 'path';
 import fs from 'fs';
 
-import basicSSL from '@vitejs/plugin-basic-ssl';
-
 const CONFIG_MARKER = Symbol.for('viteSingleSpaCli.defineConfig');
 
 export function isDefinedWithDefineConfig(config: UserConfig | undefined): boolean {
@@ -95,15 +93,6 @@ export function defineConfig(userConfig: UserConfigExport): UserConfigExport {
               ? ['vue', 'vue-router', 'axios', 'single-spa-vue', 'single-spa', ...(external || [])]
               : external,
         },
-      },
-      plugins: [
-        ...(config.plugins || []),
-        basicSSL({ name: 'test', domains: ['*'], certDir: '/Users/.../.devServer/cert' }),
-      ],
-      server: {
-        https: { key: '/Users/.../.devServer/cert/test.key', cert: '/Users/.../.devServer/cert/test.crt' },
-        cors: { origin: '*', credentials: true },
-        ...config.server,
       },
     });
 

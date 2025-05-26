@@ -13,17 +13,7 @@
     "LICENSE"
   ],
   "types": "./dist/main.d.ts",
-  "module": "./dist/main.js",
-  "exports": {
-    ".": {
-      "import": "./dist/main.js",
-      "types": "./dist/main.d.ts"
-    },
-    "./utils": {
-      "types": "./dist/utils/index.d.ts",
-      "import": "./dist/utils/index.js"
-    }
-  },
+  "main": "./dist/main.js",
   "scripts": {
     "build": "vite build",
     "test": "vitest",
@@ -32,8 +22,9 @@
     "mfe.build": "nodemon --exec \"wait-on dist/bin/cli.js && pnpm --filter vue-mfe-app run build\"",
     "mfe.dev": "nodemon --exec \"wait-on dist/bin/cli.js && pnpm --filter vue-mfe-app run dev\"",
     "mfe.serve.https": "nodemon --exec \"wait-on dist/bin/cli.js &&  pnpm --filter vue-mfe-app run serve.https\"",
-    "dev.cli.build": "pnpm clean && concurrently --colors -n CLI,MFE -c blue,yellow -k \"pnpm build.watch\" \"pnpm mfe.build\" --kill-others-on-fail",
-    "dev.cli.dev": "pnpm clean && concurrently --colors -n CLI,MFE -c blue,yellow -k \"pnpm build.watch\" \"pnpm mfe.dev\" --kill-others-on-fail"
+    "dev.cli.build": "pnpm clean && concurrently --colors -n CLI,MFE -c cyan,blue -k \"pnpm build.watch\" \"pnpm mfe.build\" --kill-others-on-fail",
+    "dev.cli.dev": "pnpm clean && concurrently --colors -n CLI,MFE -c cyan,blue -k \"pnpm build.watch\" \"pnpm mfe.dev\" --kill-others-on-fail",
+    "dev.cli.serve": "pnpm clean && concurrently --colors -n CLI,MFE -c cyan,blue -k \"pnpm build.watch\" \"pnpm mfe.serve.https\" --kill-others-on-fail"
   },
   "devDependencies": {
     "@types/ejs": "^3.1.5",

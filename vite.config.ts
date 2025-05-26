@@ -1,17 +1,34 @@
 import { defineConfig } from 'vite';
-import path from 'path';
 import dts from 'vite-plugin-dts';
+import { readFileSync } from 'fs';
+import { resolve } from 'path';
+
+const pkg = JSON.parse(readFileSync(resolve(process.cwd(), 'package.json'), 'utf-8'));
+const nodeBuiltInModules = [
+  'path',
+  'fs',
+  'url',
+  'child_process',
+  'events',
+  'node:path',
+  'node:fs',
+  'node:events',
+  'node:util',
+];
 
 export default defineConfig({
   build: {
-    target: 'node20',
     outDir: 'dist',
     emptyOutDir: true,
-    ssr: true,
+    minify: false,
+    lib: {
+      entry: resolve(__dirname, 'src/main.ts'),
+      formats: ['es'],
+    },
     rollupOptions: {
       input: {
-        cli: path.resolve(__dirname, 'bin/vite-single-spa-cli.ts'),
-        lib: path.resolve(__dirname, 'src/main.ts'),
+        cli: resolve(__dirname, 'bin/vite-single-spa-cli.ts'),
+        lib: resolve(__dirname, 'src/main.ts'),
       },
       output: {
         format: 'es',
@@ -22,7 +39,7 @@ export default defineConfig({
         },
         chunkFileNames: 'chunks/[name]-[hash].js',
       },
-      external: ['path', 'fs', 'url', 'child_process', 'vite'],
+      external: ['crypto', ...nodeBuiltInModules, ...Object.keys(pkg.dependencies || {})],
     },
   },
   publicDir: 'static',

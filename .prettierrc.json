@@ -5,5 +5,5 @@
   "printWidth": 120,
   "tabWidth": 2,
   "quoteProps": "consistent",
-  "objectWrap": "collapse"
+  "objectWrap": "preserve"
 }

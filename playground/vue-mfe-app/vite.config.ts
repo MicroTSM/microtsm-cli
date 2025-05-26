@@ -1,6 +1,5 @@
 import { fileURLToPath, URL } from 'node:url'
-
-import { defineConfig } from 'vite'
+import { defineConfig } from 'single-spa-vite-cli-service'
 import vue from '@vitejs/plugin-vue'
 
 export default defineConfig({

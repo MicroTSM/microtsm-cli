@@ -4,9 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "single-spa-vite-cli-service dev",
+    "dev": "single-spa-vite-cli-service serve --standalone",
     "dev.watch": "nodemon --exec \"pnpm dev\"",
-    "serve.https": "spa-vite-cli-service dev --https",
+    "serve.https": "single-spa-vite-cli-service serve --https",
     "serve.https.watch": "nodemon --exec \"pnpm serve.https\"",
     "build": "single-spa-vite-cli-service build",
     "build.watch": "nodemon --exec \"pnpm build\""

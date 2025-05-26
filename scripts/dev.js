@@ -6,7 +6,7 @@ async function run() {
   let firstBuildDone = false;
 
   const watcher = await build({
-    configFile: path.resolve('vite.config.ts'),
+    configFile: path.resolve('vite.config.lib.ts'),
     root: process.cwd(),
     build: {
       watch: {

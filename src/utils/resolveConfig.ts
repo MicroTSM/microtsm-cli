@@ -1,13 +1,22 @@
 import { ConfigEnv, loadConfigFromFile, UserConfig } from 'vite';
 import { defineConfig, isDefinedWithDefineConfig } from './defineConfig';
-import { CLIBuildMode } from '../types/cli';
+import { GlobalCLIOptions } from '../types/cli';
 
 export default async function resolveConfig(
   command: ConfigEnv['command'],
-  mode: CLIBuildMode = 'development',
+  root?: string,
+  options: GlobalCLIOptions = {},
 ): Promise<UserConfig> {
-  const configEnv: ConfigEnv = { command, mode };
-  let loaded = await loadConfigFromFile(configEnv);
+  const configEnv: ConfigEnv = { command, mode: options.mode || 'development' };
+
+  let loaded = await loadConfigFromFile(
+    configEnv,
+    options.config,
+    root,
+    options.logLevel,
+    undefined,
+    options.configLoader,
+  );
 
   return loaded?.config && isDefinedWithDefineConfig(loaded.config)
     ? loaded.config
