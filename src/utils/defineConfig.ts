@@ -8,9 +8,9 @@ import {
   UserConfigFnPromise,
 } from 'vite';
 import path from 'path';
-import fs from 'fs';
+import getAppName from './getAppName';
 
-const CONFIG_MARKER = Symbol.for('viteSingleSpaCli.defineConfig');
+const CONFIG_MARKER = Symbol.for('MicroTSM-CLI.defineConfig');
 
 export function isDefinedWithDefineConfig(config: UserConfig | undefined): boolean {
   return !!config && !!(config as any)[CONFIG_MARKER];
@@ -63,10 +63,7 @@ export function defineConfig(config: UserConfigFnObject): UserConfigFnObject;
 export function defineConfig(config: UserConfigFnPromise): UserConfigFnPromise;
 export function defineConfig(config: UserConfigFn): UserConfigFn;
 export function defineConfig(userConfig: UserConfigExport): UserConfigExport {
-  const packageJsonPath = path.resolve(process.cwd(), 'package.json');
-  const pkg = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
-  const appName = pkg.name || 'app';
-
+  const appName = getAppName();
   process.env.__APP_NAME__ = appName;
 
   const generateConfig = (config: UserConfig): UserConfig => {

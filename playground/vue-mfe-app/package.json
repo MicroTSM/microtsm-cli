@@ -4,9 +4,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "microtsm serve --standalone",
+    "dev": "microtsm dev",
     "dev.watch": "nodemon --exec \"pnpm dev\"",
+    "serve": "microtsm serve",
     "serve.https": "microtsm serve --https",
+    "preview": "microtsm preview",
     "serve.https.watch": "nodemon --exec \"pnpm serve.https\"",
     "build": "microtsm build",
     "build.watch": "nodemon --exec \"pnpm build\""

@@ -28,10 +28,14 @@ export interface ServeCommandCLIOptions {
    * This is useful for local development of micro-frontends that require HTTPS.
    */
   https?: boolean;
-  /**
-   * Run App in standalone mode.
-   */
-  standalone?: boolean;
+}
+
+export interface PreviewCommandCLIOptions {
+  host?: string | boolean;
+  port?: number;
+  open?: boolean | string;
+  strictPort?: boolean;
+  outDir?: string;
 }
 
 export interface BuilderCLIOptions {
@@ -40,3 +44,4 @@ export interface BuilderCLIOptions {
 
 export type CLIBuildOptions = BuildEnvironmentOptions & BuilderCLIOptions & GlobalCLIOptions;
 export type CLIServeOptions = Omit<ServerOptions, 'https'> & GlobalCLIOptions & ServeCommandCLIOptions;
+export type CLIPreviewOptions = PreviewCommandCLIOptions & GlobalCLIOptions & ServeCommandCLIOptions;
