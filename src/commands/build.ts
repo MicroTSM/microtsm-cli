@@ -6,6 +6,7 @@ import getEntryFilePath from '../guide/getEntry';
 import getVersion from '../utils/getVersion';
 import colors from 'picocolors';
 import { performance } from 'node:perf_hooks';
+import eventBus from '../utils/eventBus';
 
 export default async function buildCommand(
   root?: string,
@@ -53,6 +54,13 @@ export default async function buildCommand(
 
           message = `\n${colors.green('✓')} Build completed in ${colors.bold(duration + 'ms')}`;
           message += ` — Ready to ${colors.cyan(isDev ? 'preview' : 'deploy')}! \n`;
+
+          eventBus.emit('build:completed');
+          global.__vite_start_time = performance.now();
+        }
+
+        if (message.includes('build started')) {
+          global.__vite_start_time = performance.now();
         }
 
         logger.info(message, opts);

@@ -16,6 +16,7 @@ import getVersion from '../src/utils/getVersion';
 import { performance } from 'node:perf_hooks';
 import startDevServer from '../src/commands/dev';
 import runPreviewServer from '../src/commands/preview';
+import eventBus from '../src/utils/eventBus';
 
 const VERSION = getVersion();
 
@@ -184,15 +185,17 @@ cli
   .option('--https', `[boolean] enable HTTPS`)
   .option('--strictPort', `[boolean] exit if specified port is already in use`)
   .option('--force', `[boolean] force the optimizer to ignore the cache and re-bundle`)
-  .action(async (root: string, options: CLIServeOptions) => {
+  .action((root: string, options: CLIServeOptions) => {
     filterDuplicateOptions(options);
     try {
       const buildOptions: CLIBuildOptions = { watch: {}, sourcemap: false, clearScreen: true, mode: 'development' };
       const buildCommand = cli.commands.find((c) => c.name === 'build');
-      await buildCommand?.commandAction?.(root, buildOptions);
+      buildCommand?.commandAction?.(root, buildOptions);
 
-      const previewCommand = cli.commands.find((c) => c.name === 'preview');
-      await previewCommand?.commandAction?.(root, options);
+      eventBus.once('build:completed', () => {
+        const previewCommand = cli.commands.find((c) => c.name === 'preview');
+        previewCommand?.commandAction?.(root, options);
+      });
     } catch (e: any) {
       const logger = createLogger(options.logLevel);
       logger.error(colors.red(`Error when starting dev server:\n${e.stack}`), {
