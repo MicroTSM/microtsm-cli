@@ -1,6 +1,5 @@
 {
   "name": "@microtsm/cli",
-  "private": true,
   "version": "0.0.1",
   "description": "CLI tool to simplify Vite + Vue + Single-SPA development",
   "type": "module",
