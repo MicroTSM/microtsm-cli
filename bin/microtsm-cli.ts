@@ -53,7 +53,7 @@ const filterDuplicateOptions = <T extends object>(options: T) => {
 };
 
 /**
- * removing global flags before passing as command specific sub-configs
+ * removing global flags before passing as sub-configs command specific
  */
 function cleanGlobalCLIOptions<Options extends GlobalCLIOptions>(
   options: Options,
@@ -90,7 +90,7 @@ function cleanGlobalCLIOptions<Options extends GlobalCLIOptions>(
 }
 
 /**
- * removing builder flags before passing as command specific sub-configs
+ * removing builder flags before passing as command-specific sub-configs
  */
 function cleanBuilderCLIOptions<Options extends BuilderCLIOptions>(
   options: Options,
@@ -101,7 +101,7 @@ function cleanBuilderCLIOptions<Options extends BuilderCLIOptions>(
 }
 
 /**
- * removing serve command flags before passing as command specific sub-configs
+ * removing serve command flags before passing as command-specific sub-configs
  */
 function cleanServeCommandCLIOptions<Options extends ServeCommandCLIOptions>(
   options: Options,
@@ -192,7 +192,7 @@ cli
       const buildCommand = cli.commands.find((c) => c.name === 'build');
       buildCommand?.commandAction?.(root, buildOptions);
 
-      eventBus.once('build:completed', () => {
+      eventBus.once('ready-to-preview', () => {
         const previewCommand = cli.commands.find((c) => c.name === 'preview');
         previewCommand?.commandAction?.(root, options);
       });

@@ -55,7 +55,7 @@ export default async function buildCommand(
           message = `\n${colors.green('✓')} Build completed in ${colors.bold(duration + 'ms')}`;
           message += ` — Ready to ${colors.cyan(isDev ? 'preview' : 'deploy')}! \n`;
 
-          eventBus.emit('build:completed');
+          eventBus.emit('build-completed');
           global.__vite_start_time = performance.now();
         }
 
@@ -68,7 +68,11 @@ export default async function buildCommand(
     };
   });
 
-  await builder.buildApp();
+  eventBus.once('build-completed', async () => {
+    await generateIndexPage({ entryFilePath: getEntryFilePath(config) });
 
-  await generateIndexPage({ entryFilePath: getEntryFilePath(config) });
+    eventBus.emit('ready-to-preview');
+  });
+
+  await builder.buildApp();
 }
