@@ -78,6 +78,7 @@ export function defineConfig(userConfig: UserConfigExport): UserConfigExport {
         sourcemap: false,
         lib: {
           entry: './src/main.ts',
+          formats: ['es'],
           ...(config.build?.lib ?? {}),
         },
         rollupOptions: {
