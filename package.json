@@ -23,7 +23,8 @@
     "mfe.serve.https": "nodemon --exec \"wait-on dist/bin/cli.js &&  pnpm --filter vue-mfe-app run serve.https\"",
     "dev.cli.build": "pnpm clean && concurrently --colors -n CLI,MFE -c cyan,blue -k \"pnpm build.watch\" \"pnpm mfe.build\" --kill-others-on-fail",
     "dev.cli.dev": "pnpm clean && concurrently --colors -n CLI,MFE -c cyan,blue -k \"pnpm build.watch\" \"pnpm mfe.dev\" --kill-others-on-fail",
-    "dev.cli.serve": "pnpm clean && concurrently --colors -n CLI,MFE -c cyan,blue -k \"pnpm build.watch\" \"pnpm mfe.serve.https\" --kill-others-on-fail"
+    "dev.cli.serve": "pnpm clean && concurrently --colors -n CLI,MFE -c cyan,blue -k \"pnpm build.watch\" \"pnpm mfe.serve.https\" --kill-others-on-fail",
+    "release:patch": "pnpm build && npm version patch && npm publish --access public && git push --follow-tags"
   },
   "devDependencies": {
     "@types/ejs": "^3.1.5",
