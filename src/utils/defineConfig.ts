@@ -76,6 +76,10 @@ export function defineConfig(userConfig: UserConfigExport): UserConfigExport {
         ...config.build,
         manifest: 'manifest.json',
         sourcemap: false,
+        lib: {
+          entry: './src/main.ts',
+          ...(config.build?.lib ?? {}),
+        },
         rollupOptions: {
           ...(config.build?.rollupOptions || {}),
           input: config.build?.rollupOptions?.input || path.resolve('src/main.ts'),
