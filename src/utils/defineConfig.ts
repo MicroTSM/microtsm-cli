@@ -85,9 +85,13 @@ export function defineConfig(userConfig: UserConfigExport): UserConfigExport {
           ...(config.build?.rollupOptions || {}),
           input: config.build?.rollupOptions?.input || path.resolve('src/main.ts'),
           output: {
-            format: 'es',
-            entryFileNames: 'js/app.js',
-            chunkFileNames: 'js/chunk-[hash].js',
+            format: typeof config.build?.lib === 'object' && config.build?.lib.formats?.length ? undefined : 'es',
+            ...('fileName' in (config.build?.lib || {})
+              ? {
+                  entryFileNames: 'js/app.js',
+                  chunkFileNames: 'js/chunk-[hash].js',
+                }
+              : {}),
             ...(config.build?.rollupOptions?.output ?? {}),
           },
           external:
