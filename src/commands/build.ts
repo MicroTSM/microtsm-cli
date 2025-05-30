@@ -2,11 +2,12 @@ import resolveConfig from '../utils/resolveConfig';
 import { BuildEnvironmentOptions, createBuilder, InlineConfig, mergeConfig } from 'vite';
 import { CLIBuildOptions } from '../types/cli';
 import { generateIndexPage } from '../guide/generateGuide';
+import { performance } from 'node:perf_hooks';
 import getEntryFilePath from '../guide/getEntry';
 import getVersion from '../utils/getVersion';
 import colors from 'picocolors';
-import { performance } from 'node:perf_hooks';
 import eventBus from '../utils/eventBus';
+import installPlugins from '../plugins/installPlugins';
 
 export default async function buildCommand(
   root?: string,
@@ -14,6 +15,8 @@ export default async function buildCommand(
   buildOptions: BuildEnvironmentOptions = {},
 ) {
   let config = await resolveConfig('build', root, options);
+
+  installPlugins(config, ['styleInject']);
 
   const inlineConfig: InlineConfig = {
     ...config,
