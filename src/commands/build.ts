@@ -68,8 +68,14 @@ export default async function buildCommand(
     };
   });
 
+  const buildingRootApp =
+    typeof config.build?.rollupOptions?.input === 'string' && config.build?.rollupOptions?.input?.includes('html');
+
   eventBus.once('build-completed', async () => {
-    await generateIndexPage({ entryFilePath: getEntryFilePath(config) });
+    // Only generate guide for MFE, not root app
+    if (!buildingRootApp) {
+      await generateIndexPage({ entryFilePath: getEntryFilePath(config) });
+    }
 
     eventBus.emit('ready-to-preview');
   });
