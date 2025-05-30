@@ -11,8 +11,16 @@
     "README.md",
     "LICENSE"
   ],
-  "types": "./dist/main.d.ts",
-  "main": "./dist/main.js",
+  "exports": {
+    ".": {
+      "types": "./dist/main.d.ts",
+      "import": "./dist/main.js"
+    },
+    "./client": {
+      "types": "./dist/client.d.ts",
+      "import": "./dist/client.js"
+    }
+  },
   "scripts": {
     "build": "vite build",
     "test": "vitest",
@@ -38,11 +46,12 @@
     "terser": "^5.39.2",
     "typescript": "~5.8.3",
     "vite-plugin-dts": "^4.5.4",
+    "vite-plugin-static-copy": "^3.0.0",
     "vitest": "^3.1.4",
     "wait-on": "^8.0.3"
   },
   "dependencies": {
-    "vite": "^6.3.5",
-    "picocolors": "^1.1.1"
+    "picocolors": "^1.1.1",
+    "vite": "^6.3.5"
   }
 }

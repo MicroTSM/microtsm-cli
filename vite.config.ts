@@ -2,6 +2,7 @@ import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
+import { viteStaticCopy } from 'vite-plugin-static-copy';
 
 const pkg = JSON.parse(readFileSync(resolve(process.cwd(), 'package.json'), 'utf-8'));
 const nodeBuiltInModules = [
@@ -44,6 +45,16 @@ export default defineConfig({
     },
   },
   publicDir: 'static',
-  plugins: [dts({ entryRoot: './src', outDir: 'dist', tsconfigPath: './tsconfig.json', exclude: ['**/*.test.ts'] })],
+  plugins: [
+    dts({ entryRoot: './src', outDir: 'dist', tsconfigPath: './tsconfig.json', exclude: ['**/*.test.ts'] }),
+    viteStaticCopy({
+      targets: [
+        {
+          src: 'src/types/client.d.ts',
+          dest: '',
+        },
+      ],
+    }),
+  ],
   server: { watch: { ignored: ['**/playground/**', 'dist'] } },
 });
