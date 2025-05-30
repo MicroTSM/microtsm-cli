@@ -2,6 +2,7 @@
   "extends": "@tsconfig/node22/tsconfig.json",
   "include": [
     "vite.config.*",
+    "microtsm.config.*",
     "vitest.config.*",
     "cypress.config.*",
     "nightwatch.conf.*",
@@ -12,7 +13,7 @@
     "noEmit": true,
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
 
-    "module": "ESNext",
+    "module": "ES2022",
     "moduleResolution": "Bundler",
     "types": ["node"]
   }
