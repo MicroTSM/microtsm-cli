@@ -1,4 +1,4 @@
-import resolveConfig from '../utils/resolveConfig';
+import resolveConfig from '../config/resolveConfig';
 import { BuildEnvironmentOptions, createBuilder, InlineConfig, mergeConfig } from 'vite';
 import { CLIBuildOptions } from '../types/cli';
 import { generateIndexPage } from '../guide/generateGuide';

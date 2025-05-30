@@ -1,9 +1,9 @@
 import { createServer, InlineConfig, mergeConfig, ServerOptions } from 'vite';
 import { CLIServeOptions } from '../types/cli';
 import { printHelpMessage, printStartupTime, printUrls } from '../server/logger';
-import resolveConfig from '../utils/resolveConfig';
 import configureHTTPSServer from '../server/configureHttps';
 import modifyResolvedUrls from '../server/modifyResolvedUrls';
+import resolveConfig from '../config/resolveConfig';
 
 function defineStandaloneEnv(conf: InlineConfig, value: boolean): void {
   conf.define = {
