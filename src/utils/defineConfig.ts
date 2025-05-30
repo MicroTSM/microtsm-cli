@@ -68,6 +68,8 @@ export function defineConfig(userConfig: UserConfigExport): UserConfigExport {
 
   const generateConfig = (config: UserConfig): UserConfig => {
     const { external } = config.build?.rollupOptions ?? {};
+    const libFormatsSpecified = typeof config.build?.lib === 'object' && config.build?.lib.formats?.length;
+    const libFileNameSpecified = 'fileName' in (config.build?.lib || {});
 
     const builtConfig = viteDefineConfig({
       ...config,
@@ -85,13 +87,13 @@ export function defineConfig(userConfig: UserConfigExport): UserConfigExport {
           ...(config.build?.rollupOptions || {}),
           input: config.build?.rollupOptions?.input || path.resolve('src/main.ts'),
           output: {
-            format: typeof config.build?.lib === 'object' && config.build?.lib.formats?.length ? undefined : 'es',
-            ...('fileName' in (config.build?.lib || {})
-              ? {
+            format: libFormatsSpecified ? undefined : 'es',
+            ...(libFileNameSpecified
+              ? {}
+              : {
                   entryFileNames: 'js/app.js',
                   chunkFileNames: 'js/chunk-[hash].js',
-                }
-              : {}),
+                }),
             ...(config.build?.rollupOptions?.output ?? {}),
           },
           external:
