@@ -1,3 +1,4 @@
 export type * from 'vite';
 
-export { defineConfig } from './utils';
+export { default as defineConfig } from './config/defineConfig';
+export { default as defineRootAppConfig } from './config/defineRootAppConfig';

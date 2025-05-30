@@ -1,8 +1,9 @@
 import { ConfigEnv, loadConfigFromFile, UserConfig } from 'vite';
-import { defineConfig, isDefinedWithDefineConfig } from './defineConfig';
 import { GlobalCLIOptions } from '../types/cli';
 import { resolve } from 'path';
 import { existsSync } from 'fs';
+import defineConfig, { isDefinedWithDefineConfig } from '../config/defineConfig';
+import configFileNames from '../config/configFileNames';
 
 export default async function resolveConfig(
   command: ConfigEnv['command'],
@@ -10,8 +11,11 @@ export default async function resolveConfig(
   options: GlobalCLIOptions = {},
 ): Promise<UserConfig> {
   const configEnv: ConfigEnv = { command, mode: options.mode || 'development' };
-  const configFileName = 'microtsm.config.ts';
-  const configFile = existsSync(resolve(process.cwd(), configFileName)) ? configFileName : undefined;
+  let configFile: string | undefined;
+
+  for (const fileName of configFileNames) {
+    configFile = (existsSync(resolve(process.cwd(), fileName)) && fileName) || undefined;
+  }
 
   let loaded = await loadConfigFromFile(
     configEnv,

@@ -8,7 +8,8 @@ import {
   UserConfigFnPromise,
 } from 'vite';
 import path from 'path';
-import getAppName from './getAppName';
+import getAppName from '../utils/getAppName';
+import configFileNames from './configFileNames';
 
 const CONFIG_MARKER = Symbol.for('MicroTSM-CLI.defineConfig');
 
@@ -57,12 +58,12 @@ export function isDefinedWithDefineConfig(config: UserConfig | undefined): boole
  * @param config - User's Vite config object, function, or promise
  * @returns Transformed Vite config with single-spa-specific enhancements
  */
-export function defineConfig(config: UserConfig): UserConfig;
-export function defineConfig(config: Promise<UserConfig>): Promise<UserConfig>;
-export function defineConfig(config: UserConfigFnObject): UserConfigFnObject;
-export function defineConfig(config: UserConfigFnPromise): UserConfigFnPromise;
-export function defineConfig(config: UserConfigFn): UserConfigFn;
-export function defineConfig(userConfig: UserConfigExport): UserConfigExport {
+export default function defineConfig(config: UserConfig): UserConfig;
+export default function defineConfig(config: Promise<UserConfig>): Promise<UserConfig>;
+export default function defineConfig(config: UserConfigFnObject): UserConfigFnObject;
+export default function defineConfig(config: UserConfigFnPromise): UserConfigFnPromise;
+export default function defineConfig(config: UserConfigFn): UserConfigFn;
+export default function defineConfig(userConfig: UserConfigExport): UserConfigExport {
   const appName = getAppName();
   process.env.__APP_NAME__ = appName;
 
@@ -98,7 +99,15 @@ export function defineConfig(userConfig: UserConfigExport): UserConfigExport {
           },
           external:
             !external || Array.isArray(external)
-              ? ['vue', 'vue-router', 'axios', 'single-spa-vue', 'single-spa', ...(external || [])]
+              ? [
+                  'vue',
+                  'vue-router',
+                  'axios',
+                  'single-spa-vue',
+                  'single-spa',
+                  ...(external || []),
+                  ...configFileNames, // Exclude the config file from being bundle by rollup
+                ]
               : external,
         },
       },
