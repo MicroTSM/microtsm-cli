@@ -1,4 +1,4 @@
-import { Plugin } from 'vite';
+import { Plugin, UserConfig } from 'vite';
 import defineConfig from './defineConfig';
 import fs from 'fs';
 import path from 'path';
@@ -35,7 +35,7 @@ export type ImportMapConfig = string | string[] | ((env: Record<string, any>) =>
  *
  * Provides build-time path resolution and asset management settings.
  */
-export interface MicroTSMRootAppBuildConfig {
+export interface MicroTSMRootAppBuildConfig extends UserConfig {
   /**
    * Output directory for build artifacts.
    * @default 'dist'
@@ -102,13 +102,27 @@ export interface MicroTSMRootAppBuildConfig {
  * @returns Combined configuration object with generated MicroTSM CLI config
  */
 export default function defineRootAppConfig(config: MicroTSMRootAppBuildConfig) {
+  const buildInput = config.build?.rollupOptions?.input;
+  const defaultBuildInput = config.htmlEntry ?? 'index.html';
+
   return defineConfig({
     build: {
+      minify: false,
+      ...config.build,
       outDir: config.outDir ?? 'dist',
       rollupOptions: {
-        input: config.htmlEntry ?? 'index.html',
+        input:
+          typeof buildInput === 'string'
+            ? buildInput
+            : Array.isArray(buildInput)
+              ? [...buildInput, defaultBuildInput]
+              : typeof buildInput === 'object'
+                ? {
+                    ...buildInput,
+                    [defaultBuildInput]: defaultBuildInput,
+                  }
+                : defaultBuildInput,
       },
-      minify: false,
     },
     plugins: [createImportMapPlugin(config, 'imports'), createImportMapPlugin(config, 'stylesheets')],
     publicDir: config.publicDir ?? 'public',
