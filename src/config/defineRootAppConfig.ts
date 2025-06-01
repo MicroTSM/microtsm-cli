@@ -128,10 +128,12 @@ export default function defineRootAppConfig(config: MicroTSMRootAppBuildConfig) 
  * @throws {Error} If import map files cannot be read or merged
  */
 function createImportMapPlugin(config: MicroTSMRootAppBuildConfig, type: 'imports' | 'stylesheets'): Plugin {
+  let env: Record<string, any> = {};
+
   return {
     name: 'microtsm-importmap',
-    config(this, _, env) {
-      import.meta.env.MODE = env.mode;
+    configResolved(this, config) {
+      env = config.env;
     },
     buildStart() {
       console.log(`\n[MicroTSM] Starting import map ${type} processing...`);
@@ -141,7 +143,7 @@ function createImportMapPlugin(config: MicroTSMRootAppBuildConfig, type: 'import
       let importMaps: string[] = [];
 
       if (typeof importMapConfig === 'function') {
-        const result = importMapConfig(import.meta.env);
+        const result = importMapConfig(env);
         importMaps = Array.isArray(result) ? result : [result];
       } else if (importMapConfig) {
         importMaps = Array.isArray(importMapConfig) ? importMapConfig : [importMapConfig];
