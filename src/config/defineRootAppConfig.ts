@@ -111,6 +111,7 @@ export default function defineRootAppConfig(config: MicroTSMRootAppBuildConfig) 
       ...config.build,
       outDir: config.outDir ?? 'dist',
       rollupOptions: {
+        ...config.build?.rollupOptions,
         input:
           typeof buildInput === 'string'
             ? buildInput
@@ -122,6 +123,11 @@ export default function defineRootAppConfig(config: MicroTSMRootAppBuildConfig) 
                     [defaultBuildInput]: defaultBuildInput,
                   }
                 : defaultBuildInput,
+        output: {
+          entryFileNames: () => 'js/[name].js',
+          chunkFileNames: 'js/[name]-[hash].js',
+          ...config.build?.rollupOptions?.output,
+        },
       },
     },
     plugins: [createImportMapPlugin(config, 'imports'), createImportMapPlugin(config, 'stylesheets')],
