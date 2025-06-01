@@ -39,7 +39,7 @@ function createInjectEntryScriptPlugin(htmlEntry = 'index.html', entryScript = '
       const entryOutFile = `js/${entryBaseName}.js`; // TODO: adjust this based on config output.entryFileNames
 
       // Create the new script tag.
-      const scriptTag = `<script type="module" crossorigin src="./${entryOutFile}"></script>`;
+      const scriptTag = `<script type="module" crossorigin src="/${entryOutFile}"></script>`;
 
       // Inject the new script tag before </body> if present, otherwise before </head>
       if (htmlContent.match(/<\/body>/i)) {
