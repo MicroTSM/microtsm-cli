@@ -103,8 +103,6 @@ export default function defineConfig(userConfig: UserConfigExport): UserConfigEx
                   'vue',
                   'vue-router',
                   'axios',
-                  'single-spa-vue',
-                  'single-spa',
                   ...(external || []),
                   ...configFileNames, // Exclude the config file from being bundle by rollup
                 ]
