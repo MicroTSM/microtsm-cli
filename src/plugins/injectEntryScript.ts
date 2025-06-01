@@ -21,14 +21,12 @@ function createInjectEntryScriptPlugin(htmlEntry = 'index.html', entryScript = '
     name: 'microtsm:inject-entry-script-plugin',
     enforce: 'pre',
     writeBundle() {
-      const htmlPath = path.join(outDir, htmlEntry);
-
-      if (!fs.existsSync(htmlPath)) {
-        console.error(`[inject-entry-script-plugin] HTML entry not found: ${htmlPath}`);
+      if (!fs.existsSync(htmlEntry)) {
+        console.error(`[inject-entry-script-plugin] HTML entry not found: ${htmlEntry}`);
         return;
       }
 
-      let htmlContent = fs.readFileSync(htmlPath, 'utf-8');
+      let htmlContent = fs.readFileSync(htmlEntry, 'utf-8');
 
       // Remove any <script> tags whose src ends with ".ts"
       htmlContent = htmlContent.replace(/<script\b[^>]*src="[^"]+\.ts"[^>]*><\/script>\s*/gi, '');
@@ -53,8 +51,9 @@ function createInjectEntryScriptPlugin(htmlEntry = 'index.html', entryScript = '
         htmlContent += scriptTag;
       }
 
-      fs.writeFileSync(htmlPath, htmlContent, 'utf-8');
-      console.log(`[inject-entry-script-plugin] Injected entry script: ${scriptTag} into ${htmlEntry}`);
+      const htmlOutPath = path.join(outDir, htmlEntry);
+      fs.writeFileSync(htmlOutPath, htmlContent, 'utf-8');
+      console.log(`[inject-entry-script-plugin] Injected entry script: ${scriptTag} into ${htmlOutPath}`);
     },
   };
 }
