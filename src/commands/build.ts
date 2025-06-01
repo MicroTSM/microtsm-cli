@@ -8,6 +8,7 @@ import getVersion from '../utils/getVersion';
 import colors from 'picocolors';
 import eventBus from '../utils/eventBus';
 import installPlugins from '../plugins/installPlugins';
+import { isDefinedRootAppConfig } from '../config/defineRootAppConfig';
 
 export default async function buildCommand(
   root?: string,
@@ -71,9 +72,8 @@ export default async function buildCommand(
     };
   });
 
-  const buildingRootApp =
-    typeof config.build?.rollupOptions?.input === 'string' && config.build?.rollupOptions?.input?.includes('html');
-
+  const buildingRootApp = isDefinedRootAppConfig(config);
+  
   eventBus.once('build-completed', async () => {
     // Only generate guide for MFE, not root app
     if (!buildingRootApp) {
