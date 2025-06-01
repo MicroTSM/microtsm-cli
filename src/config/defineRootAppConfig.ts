@@ -134,8 +134,8 @@ function createImportMapPlugin(config: MicroTSMRootAppBuildConfig, type: 'import
     name: 'microtsm-importmap',
     configResolved(this, config) {
       env = config.env;
-      env.PROD = config.env.mode === 'production';
-      env.DEV = config.env.mode === 'development';
+      env.PROD = config.env.MODE === 'production';
+      env.DEV = config.env.MODE === 'development';
     },
     buildStart() {
       console.log(`\n[MicroTSM] Starting import map ${type} processing...`);
