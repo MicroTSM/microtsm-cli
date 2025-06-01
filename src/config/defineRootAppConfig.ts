@@ -1,6 +1,7 @@
 import { UserConfig } from 'vite';
 import defineConfig from './defineConfig';
 import createInjectImportMapPlugin from '../plugins/injectImportMap';
+import createInjectEntryScriptPlugin from '../plugins/injectEntryScript';
 
 /**
  * Defines dynamic import map configuration.
@@ -95,13 +96,14 @@ export function isDefinedRootAppConfig(config: UserConfig | undefined): boolean 
  * @param config - Root app build configuration object
  * @param config.outDir - Output directory for build artifacts (default: 'dist')
  * @param config.htmlEntry - Path to the main HTML entry file (default: 'index.html')
+ * @param config.entryScript - Path to the main script entry file (default: 'src/main.ts')
  * @param config.importMap - Import map configuration for JavaScript modules
  * @param config.cssImportMap - Import map configuration for CSS stylesheets
  * @returns Combined configuration object with generated MicroTSM CLI config
  */
 export default function defineRootAppConfig(config: MicroTSMRootAppBuildConfig) {
   const buildInput = config.build?.rollupOptions?.input;
-  const defaultBuildInput = config.htmlEntry ?? 'index.html';
+  const defaultBuildInput = config.entryScript ?? 'src/main.ts';
 
   const definedConfig = defineConfig({
     build: {
@@ -128,7 +130,11 @@ export default function defineRootAppConfig(config: MicroTSMRootAppBuildConfig) 
         },
       },
     },
-    plugins: [createInjectImportMapPlugin(config, 'imports'), createInjectImportMapPlugin(config, 'stylesheets')],
+    plugins: [
+      createInjectEntryScriptPlugin(config.htmlEntry, config.entryScript, config.outDir),
+      createInjectImportMapPlugin(config, 'imports'),
+      createInjectImportMapPlugin(config, 'stylesheets'),
+    ],
     publicDir: config.publicDir ?? 'public',
   });
 
