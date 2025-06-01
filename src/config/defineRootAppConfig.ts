@@ -1,4 +1,4 @@
-import { Plugin } from '@microtsm/cli';
+import { Plugin } from 'vite';
 import defineConfig from './defineConfig';
 import fs from 'fs';
 import path from 'path';
@@ -130,6 +130,9 @@ export default function defineRootAppConfig(config: MicroTSMRootAppBuildConfig) 
 function createImportMapPlugin(config: MicroTSMRootAppBuildConfig, type: 'imports' | 'stylesheets'): Plugin {
   return {
     name: 'microtsm-importmap',
+    config(this, _, env) {
+      import.meta.env.MODE = env.mode;
+    },
     buildStart() {
       console.log(`\n[MicroTSM] Starting import map ${type} processing...`);
       const importMapDir = path.resolve(config.outDir ?? 'dist', 'importmaps');
