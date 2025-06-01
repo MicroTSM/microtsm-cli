@@ -1,14 +1,6 @@
-import { Plugin, UserConfig } from 'vite';
+import { UserConfig } from 'vite';
 import defineConfig from './defineConfig';
-import fs from 'fs';
-import path from 'path';
-
-/**
- * Interface representing the structure of import maps configuration.
- */
-export interface ImportMap {
-  imports: Record<string, string>;
-}
+import createInjectImportMapPlugin from '../plugins/injectImportMap';
 
 /**
  * Defines dynamic import map configuration.
@@ -136,7 +128,7 @@ export default function defineRootAppConfig(config: MicroTSMRootAppBuildConfig) 
         },
       },
     },
-    plugins: [createImportMapPlugin(config, 'imports'), createImportMapPlugin(config, 'stylesheets')],
+    plugins: [createInjectImportMapPlugin(config, 'imports'), createInjectImportMapPlugin(config, 'stylesheets')],
     publicDir: config.publicDir ?? 'public',
   });
 
@@ -144,70 +136,4 @@ export default function defineRootAppConfig(config: MicroTSMRootAppBuildConfig) 
   Object.defineProperty(definedConfig, ROOT_CONFIG_MARKER, { value: true });
 
   return definedConfig;
-}
-
-/**
- * Creates a MicroTSM CLI plugin that handles import maps during the build process.
- * The plugin merges multiple import map files into a single consolidated file.
- *
- * @param config - MicroTSM root app build configuration
- * @param config.outDir - Output directory path (default: 'dist')
- * @param config.importMap - JavaScript import map configuration
- * @param config.cssImportMap - CSS import map configuration
- * @param type - Type of import map to process ('imports' or 'stylesheets')
- * @returns Vite plugin instance for import map processing
- * @throws {Error} If import map files cannot be read or merged
- */
-function createImportMapPlugin(config: MicroTSMRootAppBuildConfig, type: 'imports' | 'stylesheets'): Plugin {
-  let env: Record<string, any> = {};
-
-  return {
-    name: 'microtsm-importmap',
-    configResolved(this, config) {
-      env = config.env;
-      env.PROD = config.env.MODE === 'production';
-      env.DEV = config.env.MODE === 'development';
-    },
-    writeBundle() {
-      console.log(`\n[MicroTSM] Starting import map ${type} processing...`);
-      const importMapDir = path.resolve(config.outDir ?? 'dist', 'importmaps');
-
-      const importMapConfig = type === 'imports' ? config.importMap : config.cssImportMap;
-      let importMaps: string[] = [];
-
-      if (typeof importMapConfig === 'function') {
-        const result = importMapConfig(env);
-        importMaps = Array.isArray(result) ? result : [result];
-      } else if (importMapConfig) {
-        importMaps = Array.isArray(importMapConfig) ? importMapConfig : [importMapConfig];
-      }
-
-      if (importMaps) {
-        console.log(`[MicroTSM] Processing ${importMaps.length} import map file(s)`);
-
-        let mergedImportMap: ImportMap | string[] =
-          type === 'imports'
-            ? {
-                imports: {},
-              }
-            : [];
-
-        importMaps.forEach((filePath) => {
-          console.log(`[MicroTSM] Reading import map from: ${filePath}`);
-          const importMap: ImportMap | string[] = JSON.parse(fs.readFileSync(filePath, { encoding: 'utf-8' }));
-
-          if (Array.isArray(mergedImportMap)) {
-            mergedImportMap = (Array.isArray(importMap) && mergedImportMap.concat(importMap)) || [];
-          } else if ('imports' in importMap) {
-            Object.assign(mergedImportMap.imports, importMap.imports);
-          }
-        });
-
-        const destPath = path.join(importMapDir, `${type}.json`);
-        console.log(`[MicroTSM] Writing merged import map to: ${path.relative(process.cwd(), destPath)}`);
-        fs.mkdirSync(path.dirname(destPath), { recursive: true });
-        fs.writeFileSync(destPath, JSON.stringify(mergedImportMap), { encoding: 'utf-8' });
-      }
-    },
-  };
 }
