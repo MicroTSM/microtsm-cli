@@ -14,15 +14,6 @@ export default defineConfig({
   //     },
   //   },
   // },
-  build: {
-    lib: {
-      entry: './src/main.ts',
-      name: 'microtsm',
-      formats: ['es'],
-      fileName: 'main',
-    },
-    minify: false,
-  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
