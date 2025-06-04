@@ -76,6 +76,7 @@ export default function defineConfig(userConfig: UserConfigExport): UserConfigEx
       ...config,
       define: { ...config.define, __APP_NAME__: JSON.stringify(appName) },
       build: {
+        target: ['chrome64', 'firefox67', 'safari11.1', 'edge79'], // Minimum browser versions with native ES Modules support (see https://vite.dev/guide/build.html#browser-compatibility)
         ...config.build,
         manifest: 'manifest.json',
         sourcemap: false,
