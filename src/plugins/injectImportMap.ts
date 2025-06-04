@@ -69,7 +69,7 @@ function createInjectImportMapPlugin(config: MicroTSMRootAppBuildConfig, type: '
 
           if (fs.existsSync(outputHtmlPath)) {
             let htmlContent = fs.readFileSync(outputHtmlPath, 'utf-8');
-            const importMapScript = `<script type="importmap">\n${JSON.stringify(mergedImportMap, null, 2)}\n</script>\n`;
+            const importMapScript = `<script type="microtsm-importmap">\n${JSON.stringify(mergedImportMap, null, 2)}\n</script>\n`;
             // Insert the import map inline before the closing </head> tag.
             htmlContent = htmlContent.replace(/<\/head>/i, importMapScript + '</head>');
             fs.writeFileSync(outputHtmlPath, htmlContent, { encoding: 'utf-8' });
