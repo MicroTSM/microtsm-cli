@@ -9,7 +9,7 @@
     "build": "microtsm build"
   },
   "dependencies": {
-    "microtsm": "^0.0.17",
-    "@microtsm/cli": "workspace:*"
+    "@microtsm/cli": "workspace:*",
+    "microtsm": "^0.0.20"
   }
 }

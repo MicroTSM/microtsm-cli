@@ -41,7 +41,7 @@ export default defineConfig({
         },
         chunkFileNames: 'chunks/[name]-[hash].js',
       },
-      external: ['crypto', ...nodeBuiltInModules, ...Object.keys(pkg.dependencies || {})],
+      external: ['crypto', 'typescript', ...nodeBuiltInModules, ...Object.keys(pkg.dependencies || {})],
     },
   },
   publicDir: 'static',
