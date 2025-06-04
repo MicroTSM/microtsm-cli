@@ -2,6 +2,7 @@ import { UserConfig } from 'vite';
 import defineConfig from './defineConfig';
 import createInjectImportMapPlugin from '../plugins/injectImportMap';
 import createInjectEntryScriptPlugin from '../plugins/injectEntryScript';
+import createInjectPolyfillPlugin from '../plugins/injectPolyfillPlugin';
 
 /**
  * Defines dynamic import map configuration.
@@ -131,6 +132,7 @@ export default function defineRootAppConfig(config: MicroTSMRootAppBuildConfig) 
       },
     },
     plugins: [
+      createInjectPolyfillPlugin(config.htmlEntry),
       createInjectEntryScriptPlugin(config.htmlEntry, config.entryScript, config.outDir),
       createInjectImportMapPlugin(config, 'imports'),
       createInjectImportMapPlugin(config, 'stylesheets'),
