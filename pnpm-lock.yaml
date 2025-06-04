@@ -49,8 +49,8 @@ importers:
         specifier: ~5.8.3
         version: 5.8.3
       vite-plugin-css-style-inject:
-        specifier: ^1.0.2
-        version: 1.0.2(vite@6.3.5(@types/node@22.15.21)(terser@5.39.2))
+        specifier: ^1.0.3
+        version: 1.0.3(vite@6.3.5(@types/node@22.15.21)(terser@5.39.2))
       vite-plugin-dts:
         specifier: ^4.5.4
         version: 4.5.4(@types/node@22.15.21)(rollup@4.41.0)(typescript@5.8.3)(vite@6.3.5(@types/node@22.15.21)(terser@5.39.2))
@@ -1367,8 +1367,8 @@ packages:
     engines: {node: ^18.0.0 || ^20.0.0 || >=22.0.0}
     hasBin: true
 
-  vite-plugin-css-style-inject@1.0.2:
-    resolution: {integrity: sha512-MJD5FLjQ0+9AWV7OP/LhlnKXJ1tTl01eU9oN3FeqNuDdXVYUFn2RXPoTFKmMzbnYt1z89JKF0nosgRaqtgzjgA==}
+  vite-plugin-css-style-inject@1.0.3:
+    resolution: {integrity: sha512-HzZ8JowxPg03gcMzIw3BNXLvh9MxiepP5rYyeSnGewSIf9j0vsKQXE2LrXTSpAEgLJic1BTatGstr2kCv9WasQ==}
     peerDependencies:
       vite: '>2.0.0-0'
 
@@ -2807,7 +2807,7 @@ snapshots:
       - tsx
       - yaml
 
-  vite-plugin-css-style-inject@1.0.2(vite@6.3.5(@types/node@22.15.21)(terser@5.39.2)):
+  vite-plugin-css-style-inject@1.0.3(vite@6.3.5(@types/node@22.15.21)(terser@5.39.2)):
     dependencies:
       vite: 6.3.5(@types/node@22.15.21)(terser@5.39.2)
 
