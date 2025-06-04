@@ -19,21 +19,24 @@ export default function createInjectPolyfillPlugin(htmlFileName: string, outDir:
 
   const insertPolyfillBeforeAnyScriptEl = (htmlContent: string, url: string) => {
     const polyfillTag = `<script async src="${url}"></script>`;
-    // Look for the first script tag
-    const firstScriptIndex = htmlContent.indexOf('<script');
 
-    if (firstScriptIndex !== -1) {
-      // Insert polyfill before the first script tag
-      htmlContent = htmlContent.slice(0, firstScriptIndex) + polyfillTag + '\n' + htmlContent.slice(firstScriptIndex);
-    } else if (htmlContent.includes('</head>')) {
-      // If no script tag found, inject before closing head
-      htmlContent = htmlContent.replace(/<\/head>/i, `${polyfillTag}\n</head>`);
-    } else {
-      // If no script or head tag, prepend to file
-      htmlContent = polyfillTag + '\n' + htmlContent;
+    if (htmlContent.includes('<head>') && htmlContent.includes('</head>')) {
+      const headEndIndex = htmlContent.indexOf('</head>');
+      const firstScriptInHeadIndex = htmlContent.substring(0, headEndIndex).indexOf('<script');
+
+      if (firstScriptInHeadIndex !== -1) {
+        // ✅ Insert before the first <script> tag in <head>
+        return htmlContent.slice(0, firstScriptInHeadIndex) + polyfillTag + '\n' + htmlContent.slice(firstScriptInHeadIndex);
+      }
+
+      if (headEndIndex !== -1) {
+        // ✅ No script in <head>, insert at the end of <head>
+        return htmlContent.replace('</head>', `${polyfillTag}\n</head>`);
+      }
     }
 
-    return htmlContent;
+    // ✅ If <head> does not exist, wrap the script in <head> and insert after <html> opening tag
+    return htmlContent.replace(/<html[^>]*>/i, (match) => `${match}\n<head>\n${polyfillTag}\n</head>`);
   };
 
   return {
