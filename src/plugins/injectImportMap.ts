@@ -23,9 +23,10 @@ export interface ImportMap {
  */
 function createInjectImportMapPlugin(config: MicroTSMRootAppBuildConfig, type: 'imports' | 'stylesheets'): Plugin {
   let env: Record<string, any> = {};
+  const PLUGIN_NAME = 'microtsm-plugin:inject-import-map';
 
   return {
-    name: 'microtsm-inject-importmap',
+    name: PLUGIN_NAME,
 
     configResolved(resolvedConfig) {
       env = resolvedConfig.env;
@@ -34,7 +35,6 @@ function createInjectImportMapPlugin(config: MicroTSMRootAppBuildConfig, type: '
     },
 
     writeBundle() {
-      console.log(`\n[MicroTSM] Starting import map ${type} processing...`);
       const importMapDir = path.resolve(config.outDir ?? 'dist', 'importmaps');
       const importMapConfig = type === 'imports' ? config.importMap : config.cssImportMap;
       let importMaps: string[] = [];
@@ -47,13 +47,11 @@ function createInjectImportMapPlugin(config: MicroTSMRootAppBuildConfig, type: '
       }
 
       if (importMaps && importMaps.length > 0) {
-        console.log(`[MicroTSM] Processing ${importMaps.length} import map file(s)`);
         // For "imports", our merged structure starts as an object with an `imports` property.
         // For "stylesheets", it would be an array.
         let mergedImportMap: ImportMap | string[] = type === 'imports' ? { imports: {} } : [];
 
         importMaps.forEach((filePath) => {
-          console.log(`[MicroTSM] Reading import map from: ${filePath}`);
           const content = fs.readFileSync(filePath, { encoding: 'utf-8' });
           const importMap: ImportMap | string[] = JSON.parse(content);
 
@@ -75,14 +73,14 @@ function createInjectImportMapPlugin(config: MicroTSMRootAppBuildConfig, type: '
             // Insert the import map inline before the closing </head> tag.
             htmlContent = htmlContent.replace(/<\/head>/i, importMapScript + '</head>');
             fs.writeFileSync(outputHtmlPath, htmlContent, { encoding: 'utf-8' });
-            console.log(`[MicroTSM] Inserted inline import map into ${htmlEntry}`);
+            console.log(`[${PLUGIN_NAME}] Inserted inline import map into ${htmlEntry}`);
           } else {
-            console.error(`[MicroTSM] HTML entry not found at ${outputHtmlPath}`);
+            console.error(`[${PLUGIN_NAME}] HTML entry not found at ${outputHtmlPath}`);
           }
         } else {
           // For "stylesheets", write the merged map as a separate JSON file.
           const destPath = path.join(importMapDir, `${type}.json`);
-          console.log(`[MicroTSM] Writing merged import map to: ${path.relative(process.cwd(), destPath)}`);
+          console.log(`[${PLUGIN_NAME}] Writing merged import map to: ${path.relative(process.cwd(), destPath)}`);
           fs.mkdirSync(path.dirname(destPath), { recursive: true });
           fs.writeFileSync(destPath, JSON.stringify(mergedImportMap), { encoding: 'utf-8' });
         }

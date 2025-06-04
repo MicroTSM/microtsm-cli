@@ -1,3 +1,15 @@
 {
-  "name": "root-app"
+  "name": "root-app",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "microtsm dev",
+    "serve": "microtsm serve",
+    "build": "microtsm build"
+  },
+  "dependencies": {
+    "microtsm": "^0.0.17",
+    "@microtsm/cli": "workspace:*"
+  }
 }

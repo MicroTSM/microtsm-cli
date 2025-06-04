@@ -1,0 +1,8 @@
+{
+    "imports": {
+        "@microtsm/vue-mfe-app": "http://172.18.176.1:4176/js/app.js",
+        "@microtsm/vue-mfe-app-2": "http://172.18.176.1:4175/js/app.js",
+        "@microtsm/navbar": "http://172.18.176.1:4174/js/app.js",
+        "@microtsm/default-page": "http://172.18.176.1:4177/js/app.js"
+    }
+}

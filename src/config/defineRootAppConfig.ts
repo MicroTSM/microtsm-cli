@@ -104,7 +104,9 @@ export function isDefinedRootAppConfig(config: UserConfig | undefined): boolean 
  */
 export default function defineRootAppConfig(config: MicroTSMRootAppBuildConfig) {
   const buildInput = config.build?.rollupOptions?.input;
-  const defaultBuildInput = config.entryScript ?? 'src/main.ts';
+  config.entryScript = config.entryScript ?? 'src/main.ts';
+  config.htmlEntry = config.htmlEntry ?? 'index.html';
+  config.outDir = config.outDir ?? 'dist';
 
   const definedConfig = defineConfig({
     build: {
@@ -117,13 +119,13 @@ export default function defineRootAppConfig(config: MicroTSMRootAppBuildConfig) 
           typeof buildInput === 'string'
             ? buildInput
             : Array.isArray(buildInput)
-              ? [...buildInput, defaultBuildInput]
+              ? [...buildInput, config.entryScript]
               : typeof buildInput === 'object'
                 ? {
                     ...buildInput,
-                    [defaultBuildInput]: defaultBuildInput,
+                    [config.entryScript]: config.entryScript,
                   }
-                : defaultBuildInput,
+                : config.entryScript,
         output: {
           entryFileNames: () => 'js/[name].js',
           chunkFileNames: 'js/[name]-[hash].js',
@@ -132,8 +134,8 @@ export default function defineRootAppConfig(config: MicroTSMRootAppBuildConfig) 
       },
     },
     plugins: [
-      createInjectPolyfillPlugin(config.htmlEntry),
       createInjectEntryScriptPlugin(config.htmlEntry, config.entryScript, config.outDir),
+      createInjectPolyfillPlugin(config.htmlEntry, config.outDir),
       createInjectImportMapPlugin(config, 'imports'),
       createInjectImportMapPlugin(config, 'stylesheets'),
     ],

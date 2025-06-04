@@ -17,12 +17,13 @@ import { MicroTSMRootAppBuildConfig } from '../config/defineRootAppConfig';
  * @returns A Vite plugin instance.
  */
 function createInjectEntryScriptPlugin(htmlEntry = 'index.html', entryScript = 'src/main.ts', outDir = 'dist'): Plugin {
+  const PLUGIN_NAME = 'microtsm-plugin:inject-entry-script';
   return {
-    name: 'microtsm:inject-entry-script-plugin',
-    enforce: 'pre',
+    name: PLUGIN_NAME,
+    enforce: 'pre', // Ensure this plugin runs before the import map injection plugins.
     writeBundle() {
       if (!fs.existsSync(htmlEntry)) {
-        console.error(`[inject-entry-script-plugin] HTML entry not found: ${htmlEntry}`);
+        console.error(`[${PLUGIN_NAME}] HTML entry not found: ${htmlEntry}`);
         return;
       }
 
@@ -53,7 +54,7 @@ function createInjectEntryScriptPlugin(htmlEntry = 'index.html', entryScript = '
 
       const htmlOutPath = path.join(outDir, htmlEntry);
       fs.writeFileSync(htmlOutPath, htmlContent, 'utf-8');
-      console.log(`[inject-entry-script-plugin] Injected entry script: ${scriptTag} into ${htmlOutPath}`);
+      console.log(`[${PLUGIN_NAME}] Injected entry script: into ${htmlOutPath}`);
     },
   };
 }

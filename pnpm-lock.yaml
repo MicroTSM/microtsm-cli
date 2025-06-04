@@ -64,7 +64,14 @@ importers:
         specifier: ^8.0.3
         version: 8.0.3
 
-  playground/root-app: {}
+  playground/root-app:
+    dependencies:
+      '@microtsm/cli':
+        specifier: workspace:*
+        version: link:../..
+      microtsm:
+        specifier: ^0.0.17
+        version: 0.0.17(@types/node@22.15.21)(terser@5.39.2)
 
   playground/vue-mfe-app:
     dependencies:
@@ -345,6 +352,10 @@ packages:
 
   '@microsoft/tsdoc@0.15.1':
     resolution: {integrity: sha512-4aErSrCR/On/e5G2hDP0wjooqDdauzEbIq8hIkIe5pXV0rtWJZvdCEKL0ykZxex+IxIwBp0eGeV48hQN07dXtw==}
+
+  '@microtsm/cli@0.0.31':
+    resolution: {integrity: sha512-DoXhTvoW3PLixfHORC+8gi4GZFm3qqE7p8jXkB53o0LcOzzXnASTTVpFoJmu890TSFptyn+cuUt6qHtzNABOSQ==}
+    hasBin: true
 
   '@microtsm/vue@0.0.12':
     resolution: {integrity: sha512-vlYiOnPBVzo8wUchfxbdkpCYVg3zXNsj0EH6iyA4L7h72uw9TPCN7yRP3JBN2UXBZcgF14pYdCWqHtpj+RyAiw==}
@@ -1053,6 +1064,9 @@ packages:
     resolution: {integrity: sha512-/IXtbwEk5HTPyEwyKX6hGkYXxM9nbj64B+ilVJnC/R6B0pH5G4V3b0pVbL7DBj4tkhBAppbQUlf6F6Xl9LHu1g==}
     engines: {node: '>= 0.4'}
 
+  microtsm@0.0.17:
+    resolution: {integrity: sha512-j/Zx+wwx5/b2PPiK5vRAulnlv8Or+eWkqNY3RFiCAVbfYAn3wA7+QhlwavU4mKUBxCvb91wYipXwvhUwfbMX/g==}
+
   mime-db@1.52.0:
     resolution: {integrity: sha512-sPU4uV7dYlvtWJxwwxHD0PuihVNiE7TyAbQ5SWxDCB9mUYvOgroQOwYQQOKPJ8CIbE+1ETVlOoK1UC2nU3gYvg==}
     engines: {node: '>= 0.6'}
@@ -1721,6 +1735,24 @@ snapshots:
       resolve: 1.22.10
 
   '@microsoft/tsdoc@0.15.1': {}
+
+  '@microtsm/cli@0.0.31(@types/node@22.15.21)(terser@5.39.2)':
+    dependencies:
+      find-up: 7.0.0
+      picocolors: 1.1.1
+      vite: 6.3.5(@types/node@22.15.21)(terser@5.39.2)
+    transitivePeerDependencies:
+      - '@types/node'
+      - jiti
+      - less
+      - lightningcss
+      - sass
+      - sass-embedded
+      - stylus
+      - sugarss
+      - terser
+      - tsx
+      - yaml
 
   '@microtsm/vue@0.0.12(typescript@5.8.3)':
     dependencies:
@@ -2467,6 +2499,22 @@ snapshots:
       '@jridgewell/sourcemap-codec': 1.5.0
 
   math-intrinsics@1.1.0: {}
+
+  microtsm@0.0.17(@types/node@22.15.21)(terser@5.39.2):
+    dependencies:
+      '@microtsm/cli': 0.0.31(@types/node@22.15.21)(terser@5.39.2)
+    transitivePeerDependencies:
+      - '@types/node'
+      - jiti
+      - less
+      - lightningcss
+      - sass
+      - sass-embedded
+      - stylus
+      - sugarss
+      - terser
+      - tsx
+      - yaml
 
   mime-db@1.52.0: {}
 
