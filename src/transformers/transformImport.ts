@@ -16,13 +16,13 @@ import { Plugin } from 'vite';
  * are dynamically resolved. Adjust the external test as necessary for your project.
  *
  */
-export default function MicroTSM(): Plugin {
+export default function TransformImport(): Plugin {
   // A simple test for external modules:
   // Return true if the moduleSource does NOT start with "." or "/".
   const isExternalModule = (moduleSource: string) => !moduleSource.startsWith('.') && !moduleSource.startsWith('/');
 
   return {
-    name: 'microtsm-post',
+    name: 'microtsm:transform-import',
     enforce: 'post',
 
     generateBundle(_options, bundle) {
