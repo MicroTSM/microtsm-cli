@@ -19,6 +19,14 @@ const nodeBuiltInModules = [
 ];
 
 export default defineConfig({
+  define: {
+    'import.meta.env.CLOUDFLARE_POLYFILL_URL': JSON.stringify(
+      'https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?version=4.8.0',
+    ),
+    'import.meta.env.MODULE_LOADER_URL': JSON.stringify(
+      'https://cdn.jsdelivr.net/npm/microtsm@0.0.22/dist/module-loader.js',
+    ),
+  },
   build: {
     outDir: 'dist',
     emptyOutDir: true,

@@ -1,5 +1,8 @@
 import { MicroTSMRootApp } from 'microtsm';
 import layout from './layout.html?raw';
+// @ts-ignore
+import { defineComponent } from 'vue';
+console.log("🚀 ~  ~ defineComponent: ", defineComponent);
 
 // Initialize the MicroTSM app with the required layout
 const App = new MicroTSMRootApp({ layout });
@@ -13,34 +16,34 @@ App.onDestroy(() => console.log('🔥 App destroyed'));
 console.log('registering MicroApps', App.registeredMicroApps);
 
 App.configureMicroApps((microApp) => {
-    if (microApp.name === '@microtsm/navbar') {
-        microApp.shouldMount = ({ currentRoute }) => {
-            console.log('🧭 Checking if navbar should be mounted');
-            return currentRoute !== '/';
-        };
-    }
+  if (microApp.name === '@microtsm/navbar') {
+    microApp.shouldMount = ({ currentRoute }) => {
+      console.log('🧭 Checking if navbar should be mounted');
+      return currentRoute !== '/';
+    };
+  }
 });
 
 /** 🔹 Register Middleware for Navigation */
 App.useRouteMiddleware(async (route) => {
-    console.log(`🧭 Checking access for ${route.pathname}`);
+  console.log(`🧭 Checking access for ${route.pathname}`);
 
-    const protectedRoute = route.pathname.startsWith('/dashboard');
-    const userLoggedIn = !!localStorage.getItem('userToken');
+  const protectedRoute = route.pathname.startsWith('/dashboard');
+  const userLoggedIn = !!localStorage.getItem('userToken');
 
-    if (protectedRoute && !userLoggedIn) {
-        console.warn('🚫 Access denied! Redirecting to login.');
-        window.location.href = '/login';
-        return false;
-    }
+  if (protectedRoute && !userLoggedIn) {
+    console.warn('🚫 Access denied! Redirecting to login.');
+    window.location.href = '/login';
+    return false;
+  }
 
-    console.log('✅ Access granted!');
-    return true;
+  console.log('✅ Access granted!');
+  return true;
 });
 
 App.useRouteMiddleware((route) => {
-    console.log(`📊 Logging page view: ${route.pathname}`);
-    return true;
+  console.log(`📊 Logging page view: ${route.pathname}`);
+  return true;
 });
 
 /*

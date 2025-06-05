@@ -40,16 +40,14 @@ function createInjectEntryScriptPlugin(htmlEntry = 'index.html', entryScript = '
       const entryOutFile = `js/${entryBaseName}.js`; // TODO: adjust this based on config output.entryFileNames
 
       // Create the new script tag.
-      const scriptTag = `<script type="module" crossorigin src="/${entryOutFile}"></script>`;
+      const scriptTag = `<script defer type="module" crossorigin src="/${entryOutFile}"></script>`;
 
-      // Inject the new script tag before </body> if present, otherwise before </head>
-      if (htmlContent.match(/<\/body>/i)) {
-        htmlContent = htmlContent.replace(/<\/body>/i, `${scriptTag}\n</body>`);
-      } else if (htmlContent.match(/<\/head>/i)) {
+      // Inject the new script tag before </head> if present, otherwise wrap with head
+      if (htmlContent.match(/<\/head>/i)) {
         htmlContent = htmlContent.replace(/<\/head>/i, `${scriptTag}\n</head>`);
       } else {
-        // Fallback: append to the end if neither </body> nor </head> are found.
-        htmlContent += scriptTag;
+        // Wrap with a head tag if not present
+        htmlContent = `<head>\n${scriptTag}\n</head>${htmlContent}`;
       }
 
       const htmlOutPath = path.join(outDir, htmlEntry);

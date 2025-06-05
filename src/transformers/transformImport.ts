@@ -7,10 +7,10 @@ import { Plugin } from 'vite';
  * external modules (for example, modules whose id do not start with '.' or '/').
  *
  * It processes:
- *  - Dynamic import() calls: rewriting them to use MicroTSM.import().
+ *  - Dynamic import() calls: rewriting them to use MicroTSM.load().
  *  - Static external imports: Removing them from the bundle and wrapping the remainder
  *    of the code in a Promise.all() block that dynamically loads these modules via
- *    MicroTSM.import().
+ *    MicroTSM.load().
  *
  * This ensures internal modules (bundled by Vite) are left intact while external ones
  * are dynamically resolved. Adjust the external test as necessary for your project.
@@ -33,7 +33,7 @@ export default function TransformImport(): Plugin {
 
         // --- Step 1: Rewrite dynamic imports.
         // Any occurrence of import(...) will be replaced.
-        code = code.replace(/\bimport\(([^)]+)\)/g, 'MicroTSM.import($1)');
+        code = code.replace(/\bimport\(([^)]+)\)/g, 'MicroTSM.load($1)');
 
         // --- Step 2: Collect external static import statements.
         // This regex handles common cases like:
@@ -60,8 +60,8 @@ export default function TransformImport(): Plugin {
 
         // --- Step 3: If any external imports were found, wrap the remaining code.
         if (externalImports.length > 0) {
-          // Build an array of MicroTSM.import() calls for these external modules.
-          const promiseCalls = externalImports.map((imp) => `MicroTSM.import("${imp.moduleSource}")`).join(',\n  ');
+          // Build an array of MicroTSM.load() calls for these external modules.
+          const promiseCalls = externalImports.map((imp) => `MicroTSM.load("${imp.moduleSource}")`).join(',\n  ');
 
           // Build assignment statements from the import clause.
           // For named imports (starting with "{"), we assign directly.

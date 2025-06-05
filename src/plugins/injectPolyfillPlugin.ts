@@ -9,16 +9,14 @@ import fs from 'fs';
  * This plugin automatically adds a polyfill script from cdnjs.cloudflare.com
  * into the HTML file during build. The script detects required polyfills
  * based on the browser's user agent string.
- *
- * It also adds polyfill for importmap from es-module-shims. It's required since this framework relies on importmap.
  */
 export default function createInjectPolyfillPlugin(htmlFileName: string, outDir: string): Plugin {
-  const polyfillUrl = 'https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?version=4.8.0';
-  const esShimsPolyfill = 'https://ga.jspm.io/npm:es-module-shims@2.6.0/dist/es-module-shims.js';
+  const polyfillUrl = import.meta.env.CLOUDFLARE_POLYFILL_URL;
+  const importMapPolyfill = import.meta.env.MODULE_LOADER_URL;
   const PLUGIN_NAME = 'microtsm-plugin:inject-polyfill';
 
   const insertPolyfillBeforeAnyScriptEl = (htmlContent: string, url: string) => {
-    const polyfillTag = `<script async src="${url}"></script>`;
+    const polyfillTag = `<script defer src="${url}"></script>`;
 
     if (htmlContent.includes('<head>') && htmlContent.includes('</head>')) {
       const headEndIndex = htmlContent.indexOf('</head>');
@@ -26,7 +24,9 @@ export default function createInjectPolyfillPlugin(htmlFileName: string, outDir:
 
       if (firstScriptInHeadIndex !== -1) {
         // ✅ Insert before the first <script> tag in <head>
-        return htmlContent.slice(0, firstScriptInHeadIndex) + polyfillTag + '\n' + htmlContent.slice(firstScriptInHeadIndex);
+        return (
+          htmlContent.slice(0, firstScriptInHeadIndex) + polyfillTag + '\n' + htmlContent.slice(firstScriptInHeadIndex)
+        );
       }
 
       if (headEndIndex !== -1) {
@@ -53,8 +53,8 @@ export default function createInjectPolyfillPlugin(htmlFileName: string, outDir:
 
       let htmlContent = fs.readFileSync(htmlPath, 'utf-8');
 
-      htmlContent = insertPolyfillBeforeAnyScriptEl(htmlContent, esShimsPolyfill);
-      htmlContent = insertPolyfillBeforeAnyScriptEl(htmlContent, polyfillUrl); // Insert polyfill before es-module-shims
+      htmlContent = insertPolyfillBeforeAnyScriptEl(htmlContent, importMapPolyfill);
+      htmlContent = insertPolyfillBeforeAnyScriptEl(htmlContent, polyfillUrl); // Insert polyfill before importmap polyfill
 
       fs.writeFileSync(htmlPath, htmlContent, 'utf-8');
       console.log(`[${PLUGIN_NAME}] Polyfill script injected in ${htmlPath}`);
