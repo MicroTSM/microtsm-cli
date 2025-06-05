@@ -2,7 +2,8 @@ import { MicroTSMRootApp } from 'microtsm';
 import layout from './layout.html?raw';
 // @ts-ignore
 import { defineComponent } from 'vue';
-console.log("🚀 ~  ~ defineComponent: ", defineComponent);
+
+alert(defineComponent);
 
 // Initialize the MicroTSM app with the required layout
 const App = new MicroTSMRootApp({ layout });

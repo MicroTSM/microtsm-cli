@@ -15,8 +15,8 @@ export default function createInjectPolyfillPlugin(htmlFileName: string, outDir:
   const importMapPolyfill = import.meta.env.MODULE_LOADER_URL;
   const PLUGIN_NAME = 'microtsm-plugin:inject-polyfill';
 
-  const insertPolyfillBeforeAnyScriptEl = (htmlContent: string, url: string) => {
-    const polyfillTag = `<script defer src="${url}"></script>`;
+  const insertPolyfillBeforeAnyScriptEl = (htmlContent: string, url: string, type?: HTMLScriptElement['type']) => {
+    const polyfillTag = `<script defer src="${url}" ${type ? `type="${type}"` : ''}></script>`;
 
     if (htmlContent.includes('<head>') && htmlContent.includes('</head>')) {
       const headEndIndex = htmlContent.indexOf('</head>');
@@ -53,7 +53,7 @@ export default function createInjectPolyfillPlugin(htmlFileName: string, outDir:
 
       let htmlContent = fs.readFileSync(htmlPath, 'utf-8');
 
-      htmlContent = insertPolyfillBeforeAnyScriptEl(htmlContent, importMapPolyfill);
+      htmlContent = insertPolyfillBeforeAnyScriptEl(htmlContent, importMapPolyfill, 'module');
       htmlContent = insertPolyfillBeforeAnyScriptEl(htmlContent, polyfillUrl); // Insert polyfill before importmap polyfill
 
       fs.writeFileSync(htmlPath, htmlContent, 'utf-8');

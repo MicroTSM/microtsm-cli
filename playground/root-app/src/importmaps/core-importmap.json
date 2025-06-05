@@ -4,7 +4,7 @@
     "axios": "https://cdn.jsdelivr.net/npm/axios@1.8.4/dist/esm/axios.min.js",
     "vue-router": "https://cdn.jsdelivr.net/npm/vue-router@4.5.1/dist/vue-router.esm-browser.prod.js",
     "@microtsm/vue": "https://cdn.jsdelivr.net/npm/@microtsm/vue@0.0.16/dist/microtsm-vue.prod.js",
-    "microtsm": "http://192.168.56.1:4174/main.js",
+    "microtsm": "https://cdn.jsdelivr.net/npm/microtsm@0.0.22/dist/main.min.js",
     "single-spa": "https://cdn.jsdelivr.net/npm/single-spa@6.0.3/lib/es2015/esm/single-spa.min.js",
     "@fewangsit/wangsvue-fats": "https://cdn.jsdelivr.net/npm/@fewangsit/wangsvue-fats@1.0.0-alpha.137/wangsvue-fats.js",
     "@fewangsit/wangsvue-presets/fixedasset": "https://cdn.jsdelivr.net/npm/@fewangsit/wangsvue-presets@1.0.99-alpha.2/fixedasset/index.js",
