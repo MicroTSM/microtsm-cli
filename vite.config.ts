@@ -24,7 +24,7 @@ export default defineConfig({
       'https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?version=4.8.0',
     ),
     'import.meta.env.MODULE_LOADER_URL': JSON.stringify(
-      'https://cdn.jsdelivr.net/npm/microtsm@0.0.30/dist/module-loader.js',
+      'https://cdn.jsdelivr.net/npm/microtsm@0.0.31/dist/module-loader.js',
     ),
   },
   build: {
