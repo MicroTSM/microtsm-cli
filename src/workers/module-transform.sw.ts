@@ -50,14 +50,22 @@ export function transformImports(code: string): string {
   // External modules are those that do _not_ start with "." or "/"
   const isExternalModule = (moduleSource: string) => !moduleSource.startsWith('.') && !moduleSource.startsWith('/');
 
-  // --- Transform static import statements that contain a "from" clause.
-  // The regex below requires that there be some import clause (e.g. bindings)
-  // before the "from" keyword.
-  const staticImportRegex = /import\s+(.+?)\s+from\s+(['"])([^'"]+)\2\s*;?/g;
+  // --- Step 1: Transform static import statements.
+  // This regex matches both:
+  //   import "@microtsm/vue";
+  //   import { m as n, e as p } from "./chunk-CihywgAY.js";
+  // The clause before "from" is now optional.
+  const staticImportRegex = /import\s+(?:(.+?)\s+from\s+)?(['"])([^'"]+)\2\s*;?/g;
   code = code.replace(staticImportRegex, (match, clause, quote, moduleSource) => {
     if (isExternalModule(moduleSource) && importMap[moduleSource]) {
       const absoluteUrl = importMap[moduleSource];
-      return `import ${clause} from ${quote}${absoluteUrl}${quote};`;
+      if (clause) {
+        // For import statements with an import clause.
+        return `import ${clause} from ${quote}${absoluteUrl}${quote};`;
+      } else {
+        // For side-effect only imports.
+        return `import ${quote}${absoluteUrl}${quote};`;
+      }
     }
     return match;
   });
