@@ -50,17 +50,7 @@ export function transformImports(code: string): string {
   const isExternalModule = (moduleSource: string) =>
     !(moduleSource.startsWith('.') || moduleSource.startsWith('/') || moduleSource.startsWith('..'));
 
-  // The regex below matches static import statements with or without "from" clause:
-  //
-  // Breakdown:
-  //   - ^import\s/            : "import" followed by optional whitespace
-  //   - (?:([\w*\s{},]+)\s*from\s*)?  : first optional group, captures any characters (letters, spaces, curly braces, commas, asterisks)
-  //                                that appear before the "from" keyword
-  //   - (['"])                : captures quote type (either ' or ")
-  //   - ([^'"]+)              : captures module specifier (content between quotes)
-  //   - \2                    : matches closing quote (must match what was captured in group 2)
-  //   - \s*;?                 : optional trailing whitespace and semicolon
-  const staticImportRegex = /import\s*(?:([\w*\s{},]+)\s*from\s*)?(['"])([^'"]+)\2\s*;?/g;
+  const staticImportRegex = /import\s+([A-Za-z0-9_$\s{},\-*]+)\s+from\s+(['"])([^'"]+)\2\s*;?/g;
 
   code = code.replace(staticImportRegex, (match, clause, quote, moduleSource) => {
     if (isExternalModule(moduleSource) && importMap[moduleSource]) {
