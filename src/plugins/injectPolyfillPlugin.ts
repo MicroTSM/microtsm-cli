@@ -32,7 +32,7 @@ export const insertScriptBefore = (htmlContent: string, code: string) => {
  */
 export default function createInjectPolyfillPlugin(htmlFileName: string, outDir: string): Plugin {
   const polyfillUrl = import.meta.env.CLOUDFLARE_POLYFILL_URL;
-  const importMapPolyfill = import.meta.env.MODULE_LOADER_URL;
+  // const importMapPolyfill = import.meta.env.MODULE_LOADER_URL;
   const PLUGIN_NAME = 'microtsm-plugin:inject-polyfill';
 
   return {
@@ -50,10 +50,10 @@ export default function createInjectPolyfillPlugin(htmlFileName: string, outDir:
       let htmlContent = fs.readFileSync(htmlPath, 'utf-8');
 
       const getTag = (url: string, type?: string) => {
-        return `<script defer src="${url}" ${type ? `type="${type}"` : ''}></script>`;
+        return `<script src="${url}" ${type ? `type="${type}"` : ''}></script>`;
       };
 
-      htmlContent = insertScriptBefore(htmlContent, getTag(importMapPolyfill, 'module'));
+      // htmlContent = insertScriptBefore(htmlContent, getTag(importMapPolyfill, 'module'));
       htmlContent = insertScriptBefore(htmlContent, getTag(polyfillUrl)); // Insert polyfill before importmap polyfill
 
       fs.writeFileSync(htmlPath, htmlContent, 'utf-8');

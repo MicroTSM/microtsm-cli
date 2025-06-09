@@ -1,16 +1,40 @@
 import { Plugin } from 'vite';
 import path from 'path';
 import fs from 'fs';
-import { MicroTSMRootAppBuildConfig } from '../config/defineRootAppConfig';
+
+function bootstrapScript() {
+  navigator.serviceWorker
+    .register('./module-transform.sw.js', { type: 'module' })
+    .then(async (t) => {
+      await new Promise((t) => {
+        // @ts-ignore
+        navigator.serviceWorker.controller ? t(null) : location.reload();
+      });
+      // @ts-ignore
+      const e = document.querySelector('script[type="microtsm-importmap"]'),
+        r = e && e.textContent ? JSON.parse(e.textContent).imports : {};
+      t.active &&
+        t.active.postMessage({
+          type: 'SET_IMPORT_MAP',
+          importMap: r,
+        }),
+        // @ts-ignore
+        import('https://entryjs.co').catch(console.error);
+    })
+    .catch((t) => console.error('SW registration failed', t));
+}
 
 /**
- * Creates a Vite plugin that injects the final entry script tag into the HTML entry file.
+ * Creates a Vite plugin that injects an inline bootstrap script into the HTML entry file.
  *
  * This plugin does the following:
  * - Locates the HTML file in the build output (using config.htmlEntry, default "index.html").
  * - Removes any <script> tags whose src attribute points to a .ts file.
- * - Computes the output file (assumed to be located at `js/[basename].js` based on config.entryScript).
- * - Injects a new <script> tag of type is "module" and with `crossorigin` attribute before </body> or </head>.
+ * - Computes the output file name for the entry script (assumed to be located at `js/[basename].js`
+ *   based on config.entryScript).
+ * - Injects a new inline <script> tag of type "module" (with `crossorigin` attribute),
+ *   which registers the service worker and waits until it controls the page before
+ *   dynamically importing the main entry module.
  *
  * This plugin is set with `enforce: 'pre'` so it runs before the import map injection plugins.
  *
@@ -32,22 +56,33 @@ function createInjectEntryScriptPlugin(htmlEntry = 'index.html', entryScript = '
       // Remove any <script> tags whose src ends with ".ts"
       htmlContent = htmlContent.replace(/<script\b[^>]*src="[^"]+\.ts"[^>]*><\/script>\s*/gi, '');
 
-      /**
-       * Compute the output file name for the entry script.
-       * For example, if {@link MicroTSMRootAppBuildConfig.entryScript} is "src/main.ts", the result is "js/main.js".
-       */
+      // Compute the output file name for the entry script.
+      // In your build, if MicroTSMRootAppBuildConfig.entryScript is "src/main.ts",
+      // the result is expected to be "js/main.js"
       const entryBaseName = path.basename(entryScript, path.extname(entryScript)); // e.g., "main"
-      const entryOutFile = `js/${entryBaseName}.js`; // TODO: adjust this based on config output.entryFileNames
+      // This is used in the dynamic import below.
+      const entryOutFile = `/js/${entryBaseName}.js`;
 
-      // Create the new script tag.
-      const scriptTag = `<script defer type="module" crossorigin src="/${entryOutFile}"></script>`;
+      // Define the inline bootstrap code.
+      // It registers the SW, waits until a controller is available (force reload if necessary),
+      // posts the import map from the <script type="microtsm-importmap"> tag,
+      // then dynamically imports the entry script.
+      const inlineScript = `(${bootstrapScript.toString()})();`
+        .trim()
+        .replace('bootstrapScript', '')
+        .replace('https://entryjs.co', entryOutFile)
+        .replace(/\/\/ @ts-ignore/g, '')
+        .replace(/\/\* @vite-ignore \*\//g, '');
 
-      // Inject the new script tag before </head> if present, otherwise wrap with head
+      // Create the new inline script tag.
+      const scriptTag = `<script type="module">\n${inlineScript}\n</script>`;
+
+      // Inject the new inline script tag before "</head>" if it exists,
+      // otherwise create a <head> section at the beginning.
       if (htmlContent.match(/<\/head>/i)) {
         htmlContent = htmlContent.replace(/<\/head>/i, `${scriptTag}\n</head>`);
       } else {
-        // Wrap with a head tag if not present
-        htmlContent = `<head>\n${scriptTag}\n</head>${htmlContent}`;
+        htmlContent = `<head>\n${scriptTag}\n</head>\n${htmlContent}`;
       }
 
       const htmlOutPath = path.join(outDir, htmlEntry);

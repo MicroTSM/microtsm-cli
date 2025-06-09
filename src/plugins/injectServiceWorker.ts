@@ -11,7 +11,7 @@ const SET_IMPORT_MAP_SCRIPT =
 const SERVICE_WORKER_SCRIPT = `navigator.serviceWorker.register("${SW_FILE_NAME}",{type:"module"});${SET_IMPORT_MAP_SCRIPT}`;
 const SW_SOURCE_DIR = './workers';
 
-function createInjectServiceWorker(htmlEntry = 'index.html', outDir = 'dist'): Plugin {
+function createInjectServiceWorker(htmlEntry = 'index.html', outDir = 'dist', _ = 'src/main.ts'): Plugin {
   return {
     name: 'service-worker-inject',
     enforce: 'pre',

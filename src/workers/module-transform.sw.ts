@@ -20,6 +20,7 @@ self.addEventListener('install', () => {
 });
 
 self.addEventListener('activate', (event: any) => {
+  console.log('🚀 ~  ~ event: ', event);
   event.waitUntil((self as any).clients.claim()); // Take control over open tabs
 });
 
