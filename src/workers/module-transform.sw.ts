@@ -47,33 +47,32 @@ self.addEventListener('fetch', (e) => {
 });
 
 export function transformImports(code: string): string {
-  // External modules are those that do _not_ start with "." or "/"
-  const isExternalModule = (moduleSource: string) => !moduleSource.startsWith('.') && !moduleSource.startsWith('/');
+  const isExternalModule = (moduleSource: string) =>
+    !(moduleSource.startsWith('.') || moduleSource.startsWith('/') || moduleSource.startsWith('..'));
 
-  // --- Step 1: Transform static import statements.
-  // This regex matches both:
-  //   import "@microtsm/vue";
-  //   import { m as n, e as p } from "./chunk-CihywgAY.js";
-  // The clause before "from" is now optional.
-  const staticImportRegex = /import\s*\{?([^}]*)}?\s*from\s*(['"])([^'"]+)\2\s*;?/g;
+  // The regex below matches static import statements with or without "from" clause:
+  //
+  // Breakdown:
+  //   - ^import\s/            : "import" followed by optional whitespace
+  //   - (?:([\w*\s{},]+)\s*from\s*)?  : first optional group, captures any characters (letters, spaces, curly braces, commas, asterisks)
+  //                                that appear before the "from" keyword
+  //   - (['"])                : captures quote type (either ' or ")
+  //   - ([^'"]+)              : captures module specifier (content between quotes)
+  //   - \2                    : matches closing quote (must match what was captured in group 2)
+  //   - \s*;?                 : optional trailing whitespace and semicolon
+  const staticImportRegex = /import\s*(?:([\w*\s{},]+)\s*from\s*)?(['"])([^'"]+)\2\s*;?/g;
+
   code = code.replace(staticImportRegex, (match, clause, quote, moduleSource) => {
     if (isExternalModule(moduleSource) && importMap[moduleSource]) {
       const absoluteUrl = importMap[moduleSource];
-      if (clause) {
-        // For import statements with an import clause.
-        return `import ${clause} from ${quote}${absoluteUrl}${quote};`;
-      } else {
-        // For side-effect only imports.
-        return `import ${quote}${absoluteUrl}${quote};`;
-      }
+      // If there is a clause, return: "import <clause> from <absoluteUrl>;"
+      // If there isn't (side effect import), return: "import <absoluteUrl>;"
+      return clause ? `import ${clause}from ${quote}${absoluteUrl}${quote};` : `import ${quote}${absoluteUrl}${quote};`;
     }
     return match;
   });
 
-  // --- Step 2: Transform dynamic import calls.
-  // Regardless of whether the dynamic import argument is a string literal or variable,
-  // always replace it with a call to MicroTSM.load().
-  // The regex captures the expression inside the parentheses.
+  // Handle dynamic imports with MicroTSM.load:
   const dynamicImportRegex = /\bimport\s*\(\s*([^)]*?)\s*\)/g;
   code = code.replace(dynamicImportRegex, (_, expr) => {
     return `MicroTSM.load(${expr})`;
