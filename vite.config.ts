@@ -49,7 +49,6 @@ export default defineConfig({
       external: [
         'crypto',
         'typescript',
-        'vite-plugin-mkcert',
         ...nodeBuiltInModules,
         ...Object.keys(pkg.dependencies || {}),
       ],

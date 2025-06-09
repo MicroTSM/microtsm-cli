@@ -47,7 +47,6 @@
     "typescript": "~5.8.3",
     "vite-plugin-css-style-inject": "^1.0.3",
     "vite-plugin-dts": "^4.5.4",
-    "vite-plugin-mkcert": "^1.17.8",
     "vite-plugin-static-copy": "^3.0.0",
     "vitest": "^3.1.4",
     "wait-on": "^8.0.3"
@@ -55,6 +54,7 @@
   "dependencies": {
     "find-up": "^7.0.0",
     "picocolors": "^1.1.1",
-    "vite": "^6.3.5"
+    "vite": "^6.3.5",
+    "vite-plugin-mkcert": "^1.17.8"
   }
 }
