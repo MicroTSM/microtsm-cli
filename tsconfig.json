@@ -24,7 +24,7 @@
     "types": [
       "node",
       "mocha",
-      "vite/client"
+      "vite/client",
     ]
   },
   "include": [

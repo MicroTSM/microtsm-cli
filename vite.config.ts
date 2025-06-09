@@ -24,7 +24,7 @@ export default defineConfig({
       'https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?version=4.8.0',
     ),
     'import.meta.env.MODULE_LOADER_URL': JSON.stringify(
-      'https://cdn.jsdelivr.net/npm/microtsm@0.0.22/dist/module-loader.js',
+      'http://localhost:4174/module-loader.js', // 'https://cdn.jsdelivr.net/npm/microtsm@0.0.26/dist/module-loader.js',
     ),
   },
   build: {
@@ -37,19 +37,22 @@ export default defineConfig({
     },
     rollupOptions: {
       input: {
-        cli: resolve(__dirname, 'bin/microtsm-cli.ts'),
-        lib: resolve(__dirname, 'src/main.ts'),
+        'bin/cli.js': resolve(__dirname, 'bin/microtsm-cli.ts'),
+        'main.js': resolve(__dirname, 'src/main.ts'),
+        'workers/module-transform.sw': resolve(__dirname, 'src/workers/module-transform.sw.ts'),
       },
       output: {
         format: 'es',
-        entryFileNames: (chunk) => {
-          if (chunk.name === 'cli') return 'bin/cli.js';
-          if (chunk.name === 'lib') return 'main.js';
-          return 'assets/[name].js';
-        },
+        entryFileNames: '[name].js',
         chunkFileNames: 'chunks/[name]-[hash].js',
       },
-      external: ['crypto', 'typescript', ...nodeBuiltInModules, ...Object.keys(pkg.dependencies || {})],
+      external: [
+        'crypto',
+        'typescript',
+        'vite-plugin-mkcert',
+        ...nodeBuiltInModules,
+        ...Object.keys(pkg.dependencies || {}),
+      ],
     },
   },
   publicDir: 'static',

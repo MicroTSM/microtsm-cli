@@ -10,6 +10,9 @@
   },
   "dependencies": {
     "@microtsm/cli": "workspace:*",
-    "microtsm": "^0.0.20"
+    "microtsm": "^0.0.25"
+  },
+  "devDependencies": {
+    "vite-plugin-mkcert": "^1.17.8"
   }
 }

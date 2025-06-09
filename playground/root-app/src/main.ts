@@ -1,9 +1,9 @@
 import { MicroTSMRootApp } from 'microtsm';
 import layout from './layout.html?raw';
 // @ts-ignore
-import { defineComponent } from 'vue';
+import { createRouter } from 'vue-router';
 
-alert(defineComponent);
+alert(createRouter);
 
 // Initialize the MicroTSM app with the required layout
 const App = new MicroTSMRootApp({ layout });

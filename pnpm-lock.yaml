@@ -54,6 +54,9 @@ importers:
       vite-plugin-dts:
         specifier: ^4.5.4
         version: 4.5.4(@types/node@22.15.29)(rollup@4.41.0)(typescript@5.8.3)(vite@6.3.5(@types/node@22.15.29)(terser@5.40.0))
+      vite-plugin-mkcert:
+        specifier: ^1.17.8
+        version: 1.17.8(vite@6.3.5(@types/node@22.15.29)(terser@5.40.0))
       vite-plugin-static-copy:
         specifier: ^3.0.0
         version: 3.0.0(vite@6.3.5(@types/node@22.15.29)(terser@5.40.0))
@@ -70,8 +73,12 @@ importers:
         specifier: workspace:*
         version: link:../..
       microtsm:
-        specifier: ^0.0.20
-        version: 0.0.20(@types/node@22.15.29)(terser@5.40.0)
+        specifier: ^0.0.25
+        version: 0.0.25(@types/node@22.15.29)(terser@5.40.0)
+    devDependencies:
+      vite-plugin-mkcert:
+        specifier: ^1.17.8
+        version: 1.17.8(vite@6.3.5(@types/node@22.15.29)(terser@5.40.0))
 
   playground/vue-mfe-app:
     dependencies:
@@ -1087,8 +1094,8 @@ packages:
     resolution: {integrity: sha512-/IXtbwEk5HTPyEwyKX6hGkYXxM9nbj64B+ilVJnC/R6B0pH5G4V3b0pVbL7DBj4tkhBAppbQUlf6F6Xl9LHu1g==}
     engines: {node: '>= 0.4'}
 
-  microtsm@0.0.20:
-    resolution: {integrity: sha512-jKo9jJXWrvvrffkpAv4ogq9Cyi/NjMs37v7OyTR8vwzXMTdDNf17Pl2KDYp3dOai64iUgLgiLEQ1HP6taf/S5A==}
+  microtsm@0.0.25:
+    resolution: {integrity: sha512-g42YNnafa5JZMBzODCIG9LGTfF65BPGQYTXwrGsERR5tgzzx7s4+f36hxY4fhfkhkjepDeex89crSsmHJWBCfQ==}
 
   mime-db@1.52.0:
     resolution: {integrity: sha512-sPU4uV7dYlvtWJxwwxHD0PuihVNiE7TyAbQ5SWxDCB9mUYvOgroQOwYQQOKPJ8CIbE+1ETVlOoK1UC2nU3gYvg==}
@@ -1411,6 +1418,12 @@ packages:
     peerDependenciesMeta:
       vite:
         optional: true
+
+  vite-plugin-mkcert@1.17.8:
+    resolution: {integrity: sha512-S+4tNEyGqdZQ3RLAG54ETeO2qyURHWrVjUWKYikLAbmhh/iJ+36gDEja4OWwFyXNuvyXcZwNt5TZZR9itPeG5Q==}
+    engines: {node: '>=v16.7.0'}
+    peerDependencies:
+      vite: '>=3'
 
   vite-plugin-static-copy@3.0.0:
     resolution: {integrity: sha512-Uki9pPUQ4ZnoMEdIFabvoh9h6Bh9Q1m3iF7BrZvoiF30reREpJh2gZb4jOnW1/uYFzyRiLCmFSkM+8hwiq1vWQ==}
@@ -2142,9 +2155,9 @@ snapshots:
 
   asynckit@0.4.0: {}
 
-  axios@1.9.0:
+  axios@1.9.0(debug@4.4.1):
     dependencies:
-      follow-redirects: 1.15.9
+      follow-redirects: 1.15.9(debug@4.4.1)
       form-data: 4.0.2
       proxy-from-env: 1.1.0
     transitivePeerDependencies:
@@ -2364,7 +2377,9 @@ snapshots:
       path-exists: 5.0.0
       unicorn-magic: 0.1.0
 
-  follow-redirects@1.15.9: {}
+  follow-redirects@1.15.9(debug@4.4.1):
+    optionalDependencies:
+      debug: 4.4.1
 
   form-data@4.0.2:
     dependencies:
@@ -2557,7 +2572,7 @@ snapshots:
 
   math-intrinsics@1.1.0: {}
 
-  microtsm@0.0.20(@types/node@22.15.29)(terser@5.40.0):
+  microtsm@0.0.25(@types/node@22.15.29)(terser@5.40.0):
     dependencies:
       '@microtsm/cli': 0.0.41(@types/node@22.15.29)(terser@5.40.0)
     transitivePeerDependencies:
@@ -2898,6 +2913,15 @@ snapshots:
       - rollup
       - supports-color
 
+  vite-plugin-mkcert@1.17.8(vite@6.3.5(@types/node@22.15.29)(terser@5.40.0)):
+    dependencies:
+      axios: 1.9.0(debug@4.4.1)
+      debug: 4.4.1
+      picocolors: 1.1.1
+      vite: 6.3.5(@types/node@22.15.29)(terser@5.40.0)
+    transitivePeerDependencies:
+      - supports-color
+
   vite-plugin-static-copy@3.0.0(vite@6.3.5(@types/node@22.15.29)(terser@5.40.0)):
     dependencies:
       chokidar: 3.6.0
@@ -2992,7 +3016,7 @@ snapshots:
 
   wait-on@8.0.3:
     dependencies:
-      axios: 1.9.0
+      axios: 1.9.0(debug@4.4.1)
       joi: 17.13.3
       lodash: 4.17.21
       minimist: 1.2.8

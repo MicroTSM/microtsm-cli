@@ -5,7 +5,7 @@ export default defineRootAppConfig({
   importMap: ['src/importmaps/core-importmap.json', 'src/importmaps/modules-importmap.json'],
   build: {
     rollupOptions: {
-      external: ['microtsm'],
+      external: [],
     },
   },
 });

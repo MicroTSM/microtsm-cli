@@ -16,7 +16,7 @@ export function printStartupTime(appName: string, logger: Logger) {
   const cliVersion = colors.green(colors.bold(`MicroTSM CLI v${VERSION}`));
   const liveMessage = `Your ${colors.cyan(colors.bold(appName))} is live!`;
 
-  logger.info(`\n${cliVersion} ${startupDuration}\n\n${liveMessage.replaceAll('"', '')}\n`, {
+  logger.info(`\n${cliVersion} ${startupDuration}\n\n${liveMessage.replace(/"/g, '')}\n`, {
     clear: !hasExistingLogs,
   });
 }
