@@ -23,7 +23,7 @@ export function transformImports(code: string, importMap: Record<string, string>
 
   const dynamicImportRegex = /\bimport\s*\(\s*([^)]*?)\s*\)/g;
   code = code.replace(dynamicImportRegex, (_match, expr: string) => {
-    return `MicroTSM.load(${expr})`;
+    return `MicroTSM.load(${expr}, import.meta.url)`;
   });
 
   return code;
