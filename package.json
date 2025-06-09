@@ -23,7 +23,7 @@
   },
   "scripts": {
     "build": "vite build",
-    "test": "vitest",
+    "test": "vitest **/*.ts",
     "clean": "rm -r dist --force",
     "build.watch": "clear && vite build --watch",
     "mfe.build": "nodemon --exec \"wait-on dist/bin/cli.js && pnpm --filter vue-mfe-app run build\"",

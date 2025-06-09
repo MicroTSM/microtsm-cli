@@ -1,4 +1,6 @@
 /// <reference types="typescript/lib/lib.webworker.d.ts" />
+import { transformImports } from './transformImports';
+
 let importMap: Record<string, string> = {};
 
 const excludedUrlsPart = ['polyfill', 'module-loader'];
@@ -32,7 +34,7 @@ self.addEventListener('fetch', (e) => {
         const contentType: string = response.headers.get('content-type') || '';
         if (contentType.includes('javascript') && !excludedUrlsPart.some((url) => event.request.url.includes(url))) {
           return response.text().then((text: string): Response => {
-            const transformed = transformImports(text);
+            const transformed = transformImports(text, importMap);
             const blob = new Blob([transformed], { type: 'text/javascript' });
             return new Response(blob, {
               headers: { 'Content-Type': 'text/javascript' },
@@ -45,28 +47,3 @@ self.addEventListener('fetch', (e) => {
     );
   }
 });
-
-export function transformImports(code: string): string {
-  const isExternalModule = (moduleSource: string) =>
-    !(moduleSource.startsWith('.') || moduleSource.startsWith('/') || moduleSource.startsWith('..'));
-
-  const staticImportRegex = /import\s+([A-Za-z0-9_$\s{},\-*]+)\s+from\s+(['"])([^'"]+)\2\s*;?/g;
-
-  code = code.replace(staticImportRegex, (match, clause, quote, moduleSource) => {
-    if (isExternalModule(moduleSource) && importMap[moduleSource]) {
-      const absoluteUrl = importMap[moduleSource];
-      // If there is a clause, return: "import <clause> from <absoluteUrl>;"
-      // If there isn't (side effect import), return: "import <absoluteUrl>;"
-      return clause ? `import ${clause}from ${quote}${absoluteUrl}${quote};` : `import ${quote}${absoluteUrl}${quote};`;
-    }
-    return match;
-  });
-
-  // Handle dynamic imports with MicroTSM.load:
-  const dynamicImportRegex = /\bimport\s*\(\s*([^)]*?)\s*\)/g;
-  code = code.replace(dynamicImportRegex, (_, expr) => {
-    return `MicroTSM.load(${expr})`;
-  });
-
-  return code;
-}
