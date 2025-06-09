@@ -135,11 +135,12 @@ export default function defineRootAppConfig(config: MicroTSMRootAppBuildConfig) 
       },
     },
     plugins: [
+      // NOTE: these plugins order is important!
       createInjectEntryScriptPlugin(config.htmlEntry, config.entryScript, config.outDir),
-      createInjectPolyfillPlugin(config.htmlEntry, config.outDir),
       createInjectImportMapPlugin(config, 'imports'),
       createInjectImportMapPlugin(config, 'stylesheets'),
       createInjectServiceWorker(config.htmlEntry, config.outDir),
+      createInjectPolyfillPlugin(config.htmlEntry, config.outDir),
     ],
     publicDir: config.publicDir ?? 'public',
   });
