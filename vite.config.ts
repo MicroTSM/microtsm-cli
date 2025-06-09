@@ -37,8 +37,8 @@ export default defineConfig({
     },
     rollupOptions: {
       input: {
-        'bin/cli.js': resolve(__dirname, 'bin/microtsm-cli.ts'),
-        'main.js': resolve(__dirname, 'src/main.ts'),
+        'bin/cli': resolve(__dirname, 'bin/microtsm-cli.ts'),
+        'main': resolve(__dirname, 'src/main.ts'),
         'workers/module-transform.sw': resolve(__dirname, 'src/workers/module-transform.sw.ts'),
       },
       output: {
