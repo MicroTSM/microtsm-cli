@@ -50,12 +50,10 @@ export function transformImports(code: string): string {
   // External modules are those that do _not_ start with "." or "/"
   const isExternalModule = (moduleSource: string) => !moduleSource.startsWith('.') && !moduleSource.startsWith('/');
 
-  // --- Step 1: Transform static import statements.
-  // This regex allows zero or more spaces in key places, so it matches both:
-  //    import {...} from "module";
-  // and
-  //    import{...}from"module";
-  const staticImportRegex = /import\s*([^'"]+?)\s*from\s*(['"])([^'"]+)\2\s*;?/g;
+  // --- Transform static import statements that contain a "from" clause.
+  // The regex below requires that there be some import clause (e.g. bindings)
+  // before the "from" keyword.
+  const staticImportRegex = /import\s+(.+?)\s+from\s+(['"])([^'"]+)\2\s*;?/g;
   code = code.replace(staticImportRegex, (match, clause, quote, moduleSource) => {
     if (isExternalModule(moduleSource) && importMap[moduleSource]) {
       const absoluteUrl = importMap[moduleSource];
@@ -65,14 +63,12 @@ export function transformImports(code: string): string {
   });
 
   // --- Step 2: Transform dynamic import calls.
-  // This regex matches import("module") where module is a literal string.
-  const dynamicImportRegex = /\bimport\(\s*(['"])([^'"]+)\1\s*\)/g;
-  code = code.replace(dynamicImportRegex, (match, quote, moduleSource) => {
-    if (isExternalModule(moduleSource) && importMap[moduleSource]) {
-      const absoluteUrl = importMap[moduleSource];
-      return `import(${quote}${absoluteUrl}${quote})`;
-    }
-    return match;
+  // Regardless of whether the dynamic import argument is a string literal or variable,
+  // always replace it with a call to MicroTSM.load().
+  // The regex captures the expression inside the parentheses.
+  const dynamicImportRegex = /\bimport\s*\(\s*([^)]*?)\s*\)/g;
+  code = code.replace(dynamicImportRegex, (_, expr) => {
+    return `MicroTSM.load(${expr})`;
   });
 
   return code;
