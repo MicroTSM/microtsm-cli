@@ -3,6 +3,7 @@ import defineConfig from './defineConfig';
 import createInjectImportMapPlugin from '../plugins/injectImportMap';
 import createInjectEntryScriptPlugin from '../plugins/injectEntryScript';
 import createInjectPolyfillPlugin from '../plugins/injectPolyfillPlugin';
+import createInjectServiceWorker from '../plugins/injectServiceWorker';
 
 /**
  * Defines dynamic import map configuration.
@@ -138,6 +139,7 @@ export default function defineRootAppConfig(config: MicroTSMRootAppBuildConfig) 
       createInjectEntryScriptPlugin(config.htmlEntry, config.entryScript, config.outDir),
       createInjectImportMapPlugin(config, 'imports'),
       createInjectImportMapPlugin(config, 'stylesheets'),
+      createInjectServiceWorker(config.outDir),
       createInjectPolyfillPlugin(config.htmlEntry, config.outDir),
     ],
     publicDir: config.publicDir ?? 'public',
