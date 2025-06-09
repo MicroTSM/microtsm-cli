@@ -4,7 +4,7 @@ import fs from 'fs';
 
 function bootstrapScript() {
   navigator.serviceWorker
-    .register('./module-transform.sw.js', { type: 'module' })
+    .register('/module-transform.sw.js', { type: 'module' })
     .then(async (t) => {
       await new Promise((t) => {
         // @ts-ignore
