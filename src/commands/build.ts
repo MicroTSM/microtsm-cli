@@ -17,7 +17,7 @@ export default async function buildCommand(
 ) {
   let config = await resolveConfig('build', root, options);
 
-  installPlugins(config, ['styleInject']);
+  installPlugins(['styleInject'], config);
 
   const inlineConfig: InlineConfig = {
     ...config,
@@ -73,7 +73,7 @@ export default async function buildCommand(
   });
 
   const buildingRootApp = isDefinedRootAppConfig(config);
-  
+
   eventBus.once('build-completed', async () => {
     // Only generate guide for MFE, not root app
     if (!buildingRootApp) {
