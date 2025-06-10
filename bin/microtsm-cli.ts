@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { cac } from 'cac';
-import { BuildEnvironmentOptions, createLogger, WatcherOptions } from 'vite';
+import { BuildEnvironmentOptions, createLogger } from 'vite';
 import {
   BuilderCLIOptions,
   CLIBuildOptions,
@@ -188,7 +188,7 @@ cli
   .action((root: string, options: CLIServeOptions) => {
     filterDuplicateOptions(options);
     try {
-      const watch: WatcherOptions = {
+      const watch: CLIBuildOptions['watch'] = {
         include: ['**/*.{vue,html,js,ts,jsx,tsx,css,scss,sass,less,stylus,postcss,json,wasm,mjs,cjs,tsbuildinfo}'],
         exclude: ['node_modules/**', '.git/**', '.hg/**', '.svn/**'],
       };
