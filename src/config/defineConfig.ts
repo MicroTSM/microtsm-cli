@@ -104,6 +104,7 @@ export default function defineConfig(userConfig: UserConfigExport): UserConfigEx
                   'vue',
                   'axios',
                   'vue-router',
+                  'microtsm',
                   /@microtsm\/(.*)/,
                   ...(external || []),
                   ...configFileNames, // Exclude the config file from being bundle by rollup
