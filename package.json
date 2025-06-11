@@ -11,6 +11,7 @@
     "README.md",
     "LICENSE"
   ],
+  "types": "./dist/main.d.ts",
   "exports": {
     ".": {
       "types": "./dist/main.d.ts",
