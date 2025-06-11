@@ -24,6 +24,7 @@
     "@types/node": "^22.14.0",
     "@vitejs/plugin-vue": "^5.2.3",
     "@vue/tsconfig": "^0.7.0",
+    "cypress": "^14.4.1",
     "prettier": "3.5.3",
     "single-spa-vue": "^3.0.1",
     "typescript": "~5.8.0",

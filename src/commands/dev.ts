@@ -4,6 +4,7 @@ import { printHelpMessage, printStartupTime, printUrls } from '../server/logger'
 import configureHTTPSServer from '../server/configureHttps';
 import modifyResolvedUrls from '../server/modifyResolvedUrls';
 import resolveConfig from '../config/resolveConfig';
+import eventBus from '../utils/eventBus';
 
 function defineStandaloneEnv(conf: InlineConfig, value: boolean): void {
   conf.define = {
@@ -50,4 +51,5 @@ export default async function startDevServer(root: string, options: CLIServeOpti
   server.printUrls();
   printHelpMessage(logger);
   server.bindCLIShortcuts({ print: false });
+  eventBus.emit('dev-server-ready', server);
 }

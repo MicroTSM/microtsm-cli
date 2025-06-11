@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { cac } from 'cac';
-import { BuildEnvironmentOptions, createLogger } from 'vite';
+import { BuildEnvironmentOptions, createLogger, ViteDevServer } from 'vite';
 import {
   BuilderCLIOptions,
   CLIBuildOptions,
@@ -238,48 +238,37 @@ cli
   .action(async (options: CLITestOptions) => {
     const { spawn } = await import('child_process');
 
-    const server = spawn(process.execPath, [process.argv[1], '--port', String(options.port)], { stdio: 'inherit' });
+    const devCommand = cli.commands.find((c) => c.aliasNames.includes('dev'));
+    devCommand?.commandAction?.('.', { port: options.port });
 
     console.log(`Waiting for server to start on http://localhost:${options.port}...`);
-    await new Promise<void>((resolve) => {
-      const checkServer = async () => {
-        const { default: http } = await import('http');
-        http
-          .get(`http://localhost:${options.port}`, (res: any) => {
-            if (res.statusCode === 200) {
-              resolve();
-            } else {
-              setTimeout(checkServer, 1000);
-            }
-          })
-          .on('error', () => {
-            setTimeout(checkServer, 1000);
-          });
-      };
-      checkServer();
-    });
 
-    console.log('Server is up. Running Cypress...');
+    eventBus.once('dev-server-ready', async (server: ViteDevServer) => {
+      console.log('Server is up. Running Cypress...');
 
-    try {
-      // Run Cypress tests
-      const args = ['cypress', options.headless ? 'run' : 'open', '--e2e'];
+      const url = server.resolvedUrls?.local?.[0] || `http://localhost:${options.port}`;
 
-      const cypress = spawn('npx', args, {
-        stdio: 'inherit',
-        shell: true, // You need this when using `npx`
-      });
+      try {
+        // Run Cypress tests
+        const args = ['cypress', options.headless ? 'run' : 'open', '--e2e', '--config', `baseUrl=${url}`];
 
-      await new Promise((resolve, reject) => {
-        cypress.on('close', (code: number) => {
-          if (code === 0) resolve(null);
-          else reject(new Error(`Cypress exited with code ${code}`));
+        const cypress = spawn('npx', args, {
+          stdio: 'inherit',
+          shell: true, // You need this when using `npx`
         });
-      });
-    } finally {
-      // Cleanup
-      server.kill();
-    }
+
+        await new Promise((resolve, reject) => {
+          cypress.on('close', (code: number) => {
+            if (code === 0) resolve(null);
+            else reject(new Error(`Cypress exited with code ${code}`));
+          });
+        });
+      } finally {
+        // Cleanup
+        await server.close();
+        process.exit(0);
+      }
+    });
   });
 
 cli.help();
