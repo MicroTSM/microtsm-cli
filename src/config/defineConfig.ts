@@ -101,9 +101,7 @@ export default function defineConfig(userConfig: UserConfigExport): UserConfigEx
           external:
             !external || Array.isArray(external)
               ? [
-                  'vue',
                   'axios',
-                  'vue-router',
                   'microtsm',
                   /@microtsm\/(.*)/,
                   ...(external || []),
