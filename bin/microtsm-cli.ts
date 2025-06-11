@@ -84,7 +84,7 @@ function cleanGlobalCLIOptions<Options extends GlobalCLIOptions>(
   }
   if ('watch' in ret) {
     const watch = ret.watch;
-    ret.watch = watch ? {} : undefined;
+    ret.watch = watch ? {} : watch === null ? null : undefined;
   }
 
   return ret;
