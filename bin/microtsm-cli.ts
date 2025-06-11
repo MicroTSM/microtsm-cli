@@ -239,7 +239,7 @@ cli
     const { spawn } = await import('child_process');
 
     const devCommand = cli.commands.find((c) => c.aliasNames.includes('dev'));
-    devCommand?.commandAction?.('.', { port: options.port });
+    devCommand?.commandAction?.('.', { port: options.port, watch: false });
 
     console.log(`Waiting for server to start on http://localhost:${options.port}...`);
 
