@@ -7,6 +7,7 @@ import { viteStaticCopy } from 'vite-plugin-static-copy';
 const pkg = JSON.parse(readFileSync(resolve(process.cwd(), 'package.json'), 'utf-8'));
 const nodeBuiltInModules = [
   'path',
+  'http',
   'fs',
   'url',
   'child_process',

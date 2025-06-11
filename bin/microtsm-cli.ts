@@ -6,6 +6,7 @@ import {
   CLIBuildOptions,
   CLIPreviewOptions,
   CLIServeOptions,
+  CLITestOptions,
   GlobalCLIOptions,
   ServeCommandCLIOptions,
 } from '../src/types/cli';
@@ -227,6 +228,57 @@ cli
       });
 
       process.exit(1);
+    }
+  });
+
+cli
+  .command('e2e', 'run e2e tests')
+  .option('--port <port>', `[number] specify port`, { default: 9090 })
+  .option('--headless', `Run test on headless mode`)
+  .action(async (options: CLITestOptions) => {
+    const { spawn } = await import('child_process');
+
+    const server = spawn(process.execPath, [process.argv[1], '--port', String(options.port)], { stdio: 'inherit' });
+
+    console.log(`Waiting for server to start on http://localhost:${options.port}...`);
+    await new Promise<void>((resolve) => {
+      const checkServer = async () => {
+        const { default: http } = await import('http');
+        http
+          .get(`http://localhost:${options.port}`, (res: any) => {
+            if (res.statusCode === 200) {
+              resolve();
+            } else {
+              setTimeout(checkServer, 1000);
+            }
+          })
+          .on('error', () => {
+            setTimeout(checkServer, 1000);
+          });
+      };
+      checkServer();
+    });
+
+    console.log('Server is up. Running Cypress...');
+
+    try {
+      // Run Cypress tests
+      const args = ['cypress', options.headless ? 'run' : 'open', '--e2e'];
+
+      const cypress = spawn('npx', args, {
+        stdio: 'inherit',
+        shell: true, // You need this when using `npx`
+      });
+
+      await new Promise((resolve, reject) => {
+        cypress.on('close', (code: number) => {
+          if (code === 0) resolve(null);
+          else reject(new Error(`Cypress exited with code ${code}`));
+        });
+      });
+    } finally {
+      // Cleanup
+      server.kill();
     }
   });
 

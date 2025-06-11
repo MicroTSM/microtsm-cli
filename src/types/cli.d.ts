@@ -45,3 +45,4 @@ export interface BuilderCLIOptions {
 export type CLIBuildOptions = BuildEnvironmentOptions & BuilderCLIOptions & GlobalCLIOptions;
 export type CLIServeOptions = Omit<ServerOptions, 'https'> & GlobalCLIOptions & ServeCommandCLIOptions;
 export type CLIPreviewOptions = PreviewCommandCLIOptions & GlobalCLIOptions & ServeCommandCLIOptions;
+export type CLITestOptions = { port?: number; headless?: boolean };
