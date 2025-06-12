@@ -30,9 +30,13 @@ export const insertScriptBefore = (htmlContent: string, code: string) => {
  * into the HTML file during build. The script detects required polyfills
  * based on the browser's user agent string.
  */
-export default function createInjectPolyfillPlugin(htmlFileName: string, outDir: string): Plugin {
+export default function createInjectPolyfillPlugin(
+  htmlFileName: string,
+  outDir: string,
+  moduleLoader?: string,
+): Plugin {
   const polyfillUrl = import.meta.env.CLOUDFLARE_POLYFILL_URL;
-  const importMapPolyfill = import.meta.env.MODULE_LOADER_URL;
+  const importMapPolyfill = moduleLoader || import.meta.env.MODULE_LOADER_URL;
   const PLUGIN_NAME = 'microtsm-plugin:inject-polyfill';
 
   return {

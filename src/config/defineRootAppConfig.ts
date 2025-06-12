@@ -84,6 +84,11 @@ export interface MicroTSMRootAppBuildConfig extends UserConfig {
    * @default 'public'
    */
   publicDir?: string;
+
+  /**
+   * Module loader to use for loading micro-frontends.
+   */
+  moduleLoader?: string;
 }
 
 const ROOT_CONFIG_MARKER = Symbol.for('MicroTSM-CLI.defineRootAppConfig');
@@ -140,7 +145,7 @@ export default function defineRootAppConfig(config: MicroTSMRootAppBuildConfig) 
       createInjectImportMapPlugin(config, 'imports'),
       createInjectImportMapPlugin(config, 'stylesheets'),
       createInjectServiceWorker(config.outDir),
-      createInjectPolyfillPlugin(config.htmlEntry, config.outDir),
+      createInjectPolyfillPlugin(config.htmlEntry, config.outDir, config.moduleLoader),
     ],
     publicDir: config.publicDir ?? 'public',
   });
