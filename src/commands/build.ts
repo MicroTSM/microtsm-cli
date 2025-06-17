@@ -24,7 +24,7 @@ export default async function buildCommand(
     }
   }
 
-  installPlugins(['styleInject'], config);
+  if (!options.standalone) installPlugins(['styleInject'], config);
 
   const inlineConfig: InlineConfig = {
     ...config,
