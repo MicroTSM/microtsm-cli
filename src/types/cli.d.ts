@@ -40,6 +40,7 @@ export interface PreviewCommandCLIOptions {
 
 export interface BuilderCLIOptions {
   app?: boolean;
+  standalone?: boolean;
 }
 
 export type CLIBuildOptions = BuildEnvironmentOptions & BuilderCLIOptions & GlobalCLIOptions;

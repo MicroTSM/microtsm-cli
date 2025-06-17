@@ -15,7 +15,14 @@ export default async function buildCommand(
   options: CLIBuildOptions = {},
   buildOptions: BuildEnvironmentOptions = {},
 ) {
-  let config = await resolveConfig('build', root, options);
+  const config = await resolveConfig('build', root, options);
+
+  if (options.standalone) {
+    delete config.build?.lib;
+    if (config.build && config.build.rollupOptions) {
+      config.build.rollupOptions.input = 'index.html';
+    }
+  }
 
   installPlugins(['styleInject'], config);
 
@@ -76,7 +83,7 @@ export default async function buildCommand(
 
   eventBus.once('build-completed', async () => {
     // Only generate guide for MFE, not root app
-    if (!buildingRootApp) {
+    if (!buildingRootApp && !options.standalone) {
       await generateIndexPage({ entryFilePath: getEntryFilePath(config) });
     }
 

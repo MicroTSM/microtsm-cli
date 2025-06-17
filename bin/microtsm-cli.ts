@@ -137,6 +137,7 @@ cli
   .option('--manifest [name]', `[boolean | string] emit build manifest json`)
   .option('--ssrManifest [name]', `[boolean | string] emit SSR manifest json`)
   .option('--emptyOutDir', `[boolean] force empty outDir`)
+  .option('--standalone', `[boolean] enable standalone build mode`)
   .option('-w, --watch', `[boolean] rebuild on file change`)
   .option('--app', `[boolean] shortcut for builder: {}`)
   .action(async (root: string, options: CLIBuildOptions) => {
