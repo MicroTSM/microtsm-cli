@@ -22,6 +22,8 @@ export default async function buildCommand(
     if (config.build && config.build.rollupOptions) {
       config.build.rollupOptions.input = 'index.html';
     }
+
+    delete config.build?.rollupOptions?.external;
   }
 
   if (!options.standalone) installPlugins(['styleInject'], config);
