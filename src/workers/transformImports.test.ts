@@ -85,4 +85,11 @@ describe('transformImports', async () => {
     console.log(`⏱️ Uncached: ${uncachedTime.toFixed(2)}ms, Cached: ${cachedTime.toFixed(2)}ms`);
     expect(cachedTime).toBeLessThan(uncachedTime);
   });
+
+  it('seharusnya menambahkan import.meta.url pada dynamic relative import', async () => {
+    const input = `import("/foo.js")`;
+    const expected = `MicroTSM.load("/foo.js", import.meta.url)`;
+    const output = await transformImports(input, importMap);
+    expect(output).toBe(expected);
+  });
 });
