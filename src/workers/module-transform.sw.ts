@@ -6,7 +6,7 @@ let importMap: Record<string, string> = {};
 const excludedUrlsPart = ['polyfill', 'module-loader'];
 
 interface SWMessageData {
-  type: string;
+  type: 'SET_IMPORT_MAP';
   importMap?: typeof importMap;
 }
 
@@ -18,32 +18,50 @@ self.addEventListener('message', (event: MessageEvent<SWMessageData>) => {
 });
 
 self.addEventListener('install', () => {
-  (self as any).skipWaiting(); // 🚀 Immediately activate the new worker
+  // Immediately activate the new worker.
+  (self as unknown as ServiceWorkerGlobalScope).skipWaiting().then();
 });
 
 self.addEventListener('activate', (event: any) => {
-  console.log('🚀 ~  ~ event: ', event);
-  event.waitUntil((self as any).clients.claim()); // Take control over open tabs
+  // Take control of all clients / open tabs right away.
+  event.waitUntil((self as unknown as ServiceWorkerGlobalScope).clients.claim());
 });
 
+/* ------------------------------------------------------------------ */
+/* Fetch interception                                                  */
+/* ------------------------------------------------------------------ */
+
+/**
+ * For every JavaScript response, rewrite import specifiers before the
+ * browser evaluates the module.
+ */
 self.addEventListener('fetch', (e) => {
   const event = e as FetchEvent;
-  if (event.request.destination === 'script') {
-    event.respondWith(
-      fetch(event.request).then((response: Response): Promise<Response> | Response => {
-        const contentType: string = response.headers.get('content-type') || '';
-        if (contentType.includes('javascript') && !excludedUrlsPart.some((url) => event.request.url.includes(url))) {
-          return response.text().then((text: string): Response => {
-            const transformed = transformImports(text, importMap);
-            const blob = new Blob([transformed], { type: 'text/javascript' });
-            return new Response(blob, {
-              headers: { 'Content-Type': 'text/javascript' },
-            });
-          });
-        }
 
-        return response;
-      }),
-    );
-  }
+  // Only process script requests.
+  if (event.request.destination !== 'script') return;
+
+  event.respondWith(
+    fetch(event.request).then(async (response: Response) => {
+      const contentType = response.headers.get('content-type') ?? '';
+
+      const isJS = contentType.includes('javascript');
+      const isExcluded = excludedUrlsPart.some((u) => event.request.url.includes(u));
+
+      // Skip non-JS or explicitly excluded urls.
+      if (!isJS || isExcluded) return response;
+
+      // Transform import specifiers inside the JS payload.
+      const originalSource = await response.text();
+      const transformedSource = await transformImports(originalSource, importMap);
+
+      const blob = new Blob([transformedSource], {
+        type: 'text/javascript',
+      });
+
+      return new Response(blob, {
+        headers: { 'Content-Type': 'text/javascript' },
+      });
+    }),
+  );
 });
