@@ -37,26 +37,38 @@ export async function transformImports(code: string, importMap: Record<string, s
       const rest = specifier.slice(prefix.length);
 
       const candidates = [
-        `${rest}.js`,
-        `${rest}.mjs`,
-        `${rest}.es.js`,
-        `${rest}.esm.js`,
-        `${rest}/index.js`,
-        `${rest}/index.mjs`,
+        // `${rest}/index.js`,
+        // `${rest}/index.mjs`,
         `${rest}/index.es.js`,
-        `${rest}/index.esm.js`,
+        // `${rest}/index.esm.js`,
+        // `${rest}.js`,
+        // `${rest}.mjs`,
+        `${rest}.es.js`,
+        // `${rest}.esm.js`,
       ];
 
       for (const path of candidates) {
         const full = base + path;
+
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 500);
+
         try {
-          const res = await fetch(full, { method: 'HEAD' });
+          const res = await fetch(full, {
+            method: 'HEAD',
+            signal: controller.signal,
+          });
+
+          clearTimeout(timeoutId);
+
           if (res.ok) {
             urlCache.set(specifier, full); // ✅ cache hit
             return full;
           }
         } catch {
-          // Ignore errors and try next
+          // Ignore error and try next candidate
+        } finally {
+          clearTimeout(timeoutId);
         }
       }
     }
