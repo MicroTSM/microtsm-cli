@@ -116,7 +116,7 @@ export async function transformImports(code: string, importMap: Record<string, s
   // Transform dynamic imports → MicroTSM.load(...)
   const dynamicRE = /\bimport\s*\(\s*([^)]*?)\s*\)/g;
   code = code.replace(dynamicRE, (_m, expr: string) => {
-    return `MicroTSM.load(${expr}, import.meta.url)`;
+    return `MicroTSM.load(${expr}${isBare(expr.slice(1, -1)) ? '' : ', import.meta.url'})`;
   });
 
   return code;
