@@ -87,7 +87,10 @@ export default function defineConfig(userConfig: UserConfigExport): UserConfigEx
         },
         rollupOptions: {
           ...(config.build?.rollupOptions || {}),
-          input: config.build?.rollupOptions?.input || path.resolve('src/main.ts'),
+          input:
+            config.build?.rollupOptions?.input ||
+            (typeof config.build?.lib === 'object' && 'entry' in config.build?.lib && config.build?.lib?.entry) ||
+            path.resolve('src/main.ts'),
           output: {
             format: libFormatsSpecified ? undefined : 'es',
             ...(libFileNameSpecified
