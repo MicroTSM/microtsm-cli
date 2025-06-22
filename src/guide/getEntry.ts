@@ -14,7 +14,7 @@ export default function getEntryFilePath(config: InlineConfig) {
   })();
 
   if (manifestPath) {
-    const manifestFullPath = path.resolve('dist', manifestPath);
+    const manifestFullPath = path.resolve(config.build?.outDir ?? 'dist', manifestPath);
     try {
       const manifest: Manifest = JSON.parse(fs.readFileSync(manifestFullPath, 'utf-8'));
 
