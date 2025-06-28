@@ -2,25 +2,7 @@ import { Plugin } from 'vite';
 import path from 'path';
 import fs from 'fs';
 
-function bootstrapScript() {
-  navigator.serviceWorker
-    .register('/module-transform.sw.js', { type: 'module' })
-    .then(async (t) => {
-      await navigator.serviceWorker.ready;
-
-      // @ts-ignore
-      const e = document.querySelector('script[type="microtsm-importmap"]'),
-        r = e && e.textContent ? JSON.parse(e.textContent).imports : {};
-      t.active &&
-        t.active.postMessage({
-          type: 'SET_IMPORT_MAP',
-          importMap: r,
-        }),
-        // @ts-ignore
-        import('https://entryjs.co').catch(console.error);
-    })
-    .catch((t) => console.error('SW registration failed', t));
-}
+import { registerServiceWorker } from '../workers/register-sw';
 
 /**
  * Creates a Vite plugin that injects an inline bootstrap script into the HTML entry file.
@@ -65,15 +47,20 @@ function createInjectEntryScriptPlugin(htmlEntry = 'index.html', entryScript = '
       // It registers the SW, waits until a controller is available (force reload if necessary),
       // posts the import map from the <script type="microtsm-importmap"> tag,
       // then dynamically imports the entry script.
-      const inlineScript = `(${bootstrapScript.toString()})();`
+      const registerScript = `(${registerServiceWorker.toString()})();`
         .trim()
         .replace('bootstrapScript', '')
         .replace('https://entryjs.co', entryOutFile)
         .replace(/\/\/ @ts-ignore/g, '')
         .replace(/\/\* @vite-ignore \*\//g, '');
 
+      const registerScriptFileName = 'register-sw.js';
+      const scriptOutPath = path.join(outDir, registerScriptFileName);
+      fs.mkdirSync(path.dirname(scriptOutPath), { recursive: true });
+      fs.writeFileSync(scriptOutPath, registerScript, { encoding: 'utf-8' });
+
       // Create the new inline script tag.
-      const scriptTag = `<script type="module">\n${inlineScript}\n</script>`;
+      const scriptTag = `<script type="module" src="/${registerScriptFileName}"></script>`;
 
       // Inject the new inline script tag before "</head>" if it exists,
       // otherwise create a <head> section at the beginning.
