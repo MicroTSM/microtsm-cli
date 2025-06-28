@@ -6,10 +6,8 @@ function bootstrapScript() {
   navigator.serviceWorker
     .register('/module-transform.sw.js', { type: 'module' })
     .then(async (t) => {
-      await new Promise((t) => {
-        // @ts-ignore
-        navigator.serviceWorker.controller ? t(null) : location.reload();
-      });
+      await navigator.serviceWorker.ready;
+
       // @ts-ignore
       const e = document.querySelector('script[type="microtsm-importmap"]'),
         r = e && e.textContent ? JSON.parse(e.textContent).imports : {};
