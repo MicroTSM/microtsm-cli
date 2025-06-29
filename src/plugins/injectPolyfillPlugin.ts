@@ -35,8 +35,8 @@ export default function createInjectPolyfillPlugin(
   outDir: string,
   moduleLoader?: string,
 ): Plugin {
-  const polyfillUrl = import.meta.env.CLOUDFLARE_POLYFILL_URL;
-  const importMapPolyfill = moduleLoader || import.meta.env.MODULE_LOADER_URL;
+  const polyfillUrl = __CLOUDFLARE_POLYFILL_URL__;
+  const importMapPolyfill = moduleLoader || __MODULE_LOADER_URL__?.replace('{VERSION}', __MICROTSM_VERSION__);
   const PLUGIN_NAME = 'microtsm-plugin:inject-polyfill';
 
   return {
@@ -65,3 +65,7 @@ export default function createInjectPolyfillPlugin(
     },
   };
 }
+
+declare const __CLOUDFLARE_POLYFILL_URL__: string;
+declare const __MODULE_LOADER_URL__: string;
+declare const __MICROTSM_VERSION__: string;

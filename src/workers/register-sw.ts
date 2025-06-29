@@ -34,46 +34,16 @@ export function registerServiceWorker(): void {
       })
       .catch((err) => console.error('SW registration failed', err));
   } else {
-    const ua = navigator.userAgent;
-    let browser = 'Unknown';
-    let version = 0;
-    let isSupported = false;
-
-    const getVersion = (regex: RegExp) => {
-      const match = ua.match(regex);
-      return match ? parseFloat(match[1]) : null;
-    };
-
-    if (/Chrome\/(\d+\.\d+|\d+)/.test(ua) && !/Edg|OPR/.test(ua)) {
-      browser = 'Chrome';
-      version = getVersion(/Chrome\/(\d+\.\d+|\d+)/) ?? version;
-      isSupported = version >= 64;
-    } else if (/Firefox\/(\d+\.\d+|\d+)/.test(ua)) {
-      browser = 'Firefox';
-      version = getVersion(/Firefox\/(\d+\.\d+|\d+)/) ?? version;
-      isSupported = version >= 67;
-    } else if (/Version\/(\d+\.\d+|\d+).+Safari/.test(ua) && !/Chrome/.test(ua)) {
-      browser = 'Safari';
-      version = getVersion(/Version\/(\d+\.\d+|\d+)/) ?? version;
-      isSupported = version >= 11.1;
-    } else if (/Edg\/(\d+\.\d+|\d+)/.test(ua)) {
-      browser = 'Edge';
-      version = getVersion(/Edg\/(\d+\.\d+|\d+)/) ?? version;
-      isSupported = version >= 79;
-    }
-
-    if (!isSupported) {
-      alert(
-        `Your browser is not supported.\n\n` +
-          `Detected: ${browser} ${version || '(unknown version)'}\n\n` +
-          `Please use one of the following supported browsers:\n` +
-          `- Chrome 64+\n- Firefox 67+\n- Safari 11.1+\n- Edge 79+`,
-      );
-
-      document.body.innerHTML =
-        '<h2 style="text-align:center; margin-top:20vh;">Unsupported Browser</h2>' +
-        '<p style="text-align:center;">Please switch to a supported browser:<br>Chrome 64+, Firefox 67+, Safari 11.1+, Edge 79+</p>';
-      throw new Error('Unsupported browser');
-    }
+    // For browser that not support service workers
+    fetch(__MICROTSM_URL__.replace('{VERSION}', __MICROTSM_VERSION__) + 'misc/unsupported-browser.html')
+      .then((res) => res.text())
+      .then((html) => {
+        document.open();
+        document.writeln(html);
+        document.close();
+      });
   }
 }
+
+declare const __MICROTSM_URL__: string;
+declare const __MICROTSM_VERSION__: string;
