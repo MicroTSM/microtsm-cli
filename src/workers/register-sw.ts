@@ -12,7 +12,7 @@ export function registerServiceWorker(): void {
         const importMap = scriptEl && scriptEl.textContent ? JSON.parse(scriptEl.textContent).imports : {};
 
         const setImportMap = () => {
-          const overrides = JSON.parse(localStorage.importMapOverrides);
+          const overrides = JSON.parse(localStorage.importMapOverrides ?? '{}');
           if (navigator.serviceWorker.controller) {
             navigator.serviceWorker.controller.postMessage({
               type: 'SET_IMPORT_MAP',
