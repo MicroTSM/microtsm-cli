@@ -12,10 +12,11 @@ export function registerServiceWorker(): void {
         const importMap = scriptEl && scriptEl.textContent ? JSON.parse(scriptEl.textContent).imports : {};
 
         const setImportMap = () => {
+          const overrides = JSON.parse(localStorage.importMapOverrides);
           if (navigator.serviceWorker.controller) {
             navigator.serviceWorker.controller.postMessage({
               type: 'SET_IMPORT_MAP',
-              importMap,
+              importMap: { ...importMap, ...overrides },
             });
           }
         };
@@ -31,6 +32,12 @@ export function registerServiceWorker(): void {
         // Some browsers may clear the import map from memory when the tab is suspended,
         // resulting in an empty import map and potential errors when the tab becomes active again.
         window.addEventListener('focus', setImportMap);
+        window.addEventListener('microtsm:root-app-relaunch', setImportMap);
+
+        window.onbeforeunload = () => {
+          window.removeEventListener('focus', setImportMap);
+          window.removeEventListener('microtsm:root-app-relaunch', setImportMap);
+        };
       })
       .catch((err) => console.error('SW registration failed', err));
   } else {
