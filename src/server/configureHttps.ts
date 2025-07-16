@@ -5,11 +5,11 @@ export default function configureHTTPSServer(conf: InlineConfig): void {
   conf.plugins = [...(conf.plugins || []), mkcert()];
   conf.server = {
     ...conf.server,
-    cors: {
-      origin: '*',
-      credentials: true,
-    },
+    cors: true,
   };
 
-  conf.preview = conf.server;
+  conf.preview = {
+    ...conf.preview,
+    cors: true
+  };
 }
