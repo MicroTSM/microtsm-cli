@@ -10,4 +10,6 @@ export default function configureHTTPSServer(conf: InlineConfig): void {
       credentials: true,
     },
   };
+
+  conf.preview = conf.server;
 }
