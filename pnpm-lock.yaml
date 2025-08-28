@@ -11,12 +11,21 @@ importers:
       find-up:
         specifier: ^7.0.0
         version: 7.0.0
+      i:
+        specifier: ^0.3.7
+        version: 0.3.7
       picocolors:
         specifier: ^1.1.1
         version: 1.1.1
+      pn:
+        specifier: ^1.1.0
+        version: 1.1.0
       vite:
         specifier: ^6.3.5
         version: 6.3.5(@types/node@22.15.29)(terser@5.40.0)
+      vite-plugin-dts:
+        specifier: ^4.5.4
+        version: 4.5.4(@types/node@22.15.29)(rollup@4.41.0)(typescript@5.8.3)(vite@6.3.5(@types/node@22.15.29)(terser@5.40.0))
       vite-plugin-mkcert:
         specifier: ^1.17.8
         version: 1.17.8(vite@6.3.5(@types/node@22.15.29)(terser@5.40.0))
@@ -54,9 +63,6 @@ importers:
       vite-plugin-css-style-inject:
         specifier: ^1.0.3
         version: 1.0.3(vite@6.3.5(@types/node@22.15.29)(terser@5.40.0))
-      vite-plugin-dts:
-        specifier: ^4.5.4
-        version: 4.5.4(@types/node@22.15.29)(rollup@4.41.0)(typescript@5.8.3)(vite@6.3.5(@types/node@22.15.29)(terser@5.40.0))
       vite-plugin-static-copy:
         specifier: ^3.0.0
         version: 3.0.0(vite@6.3.5(@types/node@22.15.29)(terser@5.40.0))
@@ -1263,6 +1269,10 @@ packages:
     resolution: {integrity: sha512-SEQu7vl8KjNL2eoGBLF3+wAjpsNfA9XMlXAYj/3EdaNfAlxKthD1xjEQfGOUhllCGGJVNY34bRr6lPINhNjyZw==}
     engines: {node: '>=8.12.0'}
 
+  i@0.3.7:
+    resolution: {integrity: sha512-FYz4wlXgkQwIPqhzC5TdNMLSE5+GS1IIDJZY/1ZiEPCT2S3COUVZeT5OW4BmW4r5LHLQuOosSwsvnroG9GR59Q==}
+    engines: {node: '>=0.4'}
+
   iconv-lite@0.6.3:
     resolution: {integrity: sha512-4fCk79wshMdzMp2rH06qWrJE4iolqLhCUH+OiuIgU++RB0+94NlDL81atO7GX55uUKueo0txHNtvEyI6D7WdMw==}
     engines: {node: '>=0.10.0'}
@@ -1571,6 +1581,9 @@ packages:
 
   pkg-types@2.1.0:
     resolution: {integrity: sha512-wmJwA+8ihJixSoHKxZJRBQG1oY8Yr9pGLzRmSsNms0iNWyHHAlZCa7mmKiFR10YPZuz/2k169JiS/inOjBCZ2A==}
+
+  pn@1.1.0:
+    resolution: {integrity: sha512-2qHaIQr2VLRFoxe2nASzsV6ef4yOOH+Fi9FBOVH6cqeSgUnoyySPZkxzLuzd+RYOQTRpROA0ztTMqxROKSb/nA==}
 
   postcss@8.5.3:
     resolution: {integrity: sha512-dle9A3yYxlBSrt8Fu+IpjGT8SY8hN0mlaA6GY8t0P5PjIOZemULz/E2Bnm/2dcUOena75OTNkHI76uZBNUUq3A==}
@@ -2646,9 +2659,9 @@ snapshots:
   '@vue/language-core@2.2.0(typescript@5.8.3)':
     dependencies:
       '@volar/language-core': 2.4.14
-      '@vue/compiler-dom': 3.5.14
+      '@vue/compiler-dom': 3.5.17
       '@vue/compiler-vue2': 2.7.16
-      '@vue/shared': 3.5.14
+      '@vue/shared': 3.5.17
       alien-signals: 0.4.14
       minimatch: 9.0.5
       muggle-string: 0.4.1
@@ -3323,6 +3336,8 @@ snapshots:
 
   human-signals@1.1.1: {}
 
+  i@0.3.7: {}
+
   iconv-lite@0.6.3:
     dependencies:
       safer-buffer: 2.1.2
@@ -3636,6 +3651,8 @@ snapshots:
       confbox: 0.2.2
       exsolve: 1.0.5
       pathe: 2.0.3
+
+  pn@1.1.0: {}
 
   postcss@8.5.3:
     dependencies:

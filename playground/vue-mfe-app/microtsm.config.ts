@@ -1,9 +1,13 @@
 import { fileURLToPath, URL } from 'node:url'
-import { defineConfig } from '@microtsm/cli'
+import { defineConfig, dts } from '@microtsm/cli'
 import vue from '@vitejs/plugin-vue'
+import dtsPlugin from 'vite-plugin-dts'
 
 const conf = defineConfig({
-  plugins: [vue()],
+  plugins: [
+    vue(),
+    dtsPlugin({ outDir: 'dist/types', entryRoot: './src', tsconfigPath: './tsconfig.json' }),
+  ],
   build: {
     minify: false,
     // target: ['chrome80', 'firefox74', 'safari13.1', 'edge80'],
