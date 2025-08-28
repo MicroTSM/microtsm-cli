@@ -86,7 +86,7 @@ export default async function buildCommand(
   eventBus.once('build-completed', async () => {
     // Only generate guide for MFE, not root app
     if (!buildingRootApp && !options.standalone) {
-      await generateIndexPage({ entryFilePath: getEntryFilePath(config) });
+      await generateIndexPage({ entryFilePath: getEntryFilePath(config), outDir: inlineConfig.build?.outDir });
     }
 
     eventBus.emit('ready-to-preview');

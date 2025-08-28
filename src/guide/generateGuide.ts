@@ -8,8 +8,8 @@ const getTemplatePath = (fileName: string) => {
   return path.resolve(__dirname, '../templates/' + fileName);
 };
 
-export async function generateIndexPage(config: { entryFilePath: string }) {
-  const outputPath = path.resolve('dist/index.html');
+export async function generateIndexPage(config: { entryFilePath: string; outDir?: string }) {
+  const outputPath = path.resolve(`${config.outDir}/index.html`);
 
   if (!fs.existsSync(outputPath)) {
     fs.mkdirSync(path.dirname(outputPath), { recursive: true });
