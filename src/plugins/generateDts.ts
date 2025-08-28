@@ -15,17 +15,18 @@ export default function dts(options: PluginOptions = {}) {
 }
 
 export function configureDtsPlugin(config: InlineConfig, options: PluginOptions = {}) {
-  const entryRoot =
+  const entryFile =
     config.build?.lib && typeof config.build.lib === 'object' && 'entry' in config.build.lib
       ? typeof config.build.lib.entry === 'string'
-        ? config.build.lib.entry.split('/').slice(0, -1).join('/') // To get the directory of the entry file
-        : './src'
-      : './src';
+        ? config.build.lib.entry // To get the directory of the entry file
+        : './src/main.ts'
+      : './src/main.ts';
 
   const plugin = dtsPlugin({
     logLevel: 'silent',
-    entryRoot,
+    entryRoot: entryFile.split('/').slice(0, -1).join('/'),
     outDir: config.build?.outDir,
+    include: entryFile,
     ...options,
   });
 
