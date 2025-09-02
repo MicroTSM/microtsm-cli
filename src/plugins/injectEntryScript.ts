@@ -1,8 +1,11 @@
-import { Plugin } from 'vite';
-import path from 'path';
 import fs from 'fs';
+import path from 'path';
+import { InlineConfig, Plugin } from 'vite';
 
+import { MicroTSMRootAppBuildConfig } from '../config/defineRootAppConfig';
+import { readManifest } from '../guide/getEntry';
 import { registerServiceWorker } from '../workers/register-sw';
+import { getHashedSwSFileName, SW_FILE_NAME, createHash } from './injectServiceWorker';
 
 /**
  * Creates a Vite plugin that injects an inline bootstrap script into the HTML entry file.
@@ -20,8 +23,9 @@ import { registerServiceWorker } from '../workers/register-sw';
  *
  * @returns A Vite plugin instance.
  */
-function createInjectEntryScriptPlugin(htmlEntry = 'index.html', entryScript = 'src/main.ts', outDir = 'dist'): Plugin {
+function createInjectEntryScriptPlugin(config: MicroTSMRootAppBuildConfig, viteConfig: InlineConfig): Plugin {
   const PLUGIN_NAME = 'microtsm-plugin:inject-entry-script';
+  const { htmlEntry = 'index.html', outDir = 'dist' } = config;
   return {
     name: PLUGIN_NAME,
     enforce: 'pre', // Ensure this plugin runs before the import map injection plugins.
@@ -36,25 +40,31 @@ function createInjectEntryScriptPlugin(htmlEntry = 'index.html', entryScript = '
       // Remove any <script> tags whose src ends with ".ts"
       htmlContent = htmlContent.replace(/<script\b[^>]*src="[^"]+\.ts"[^>]*><\/script>\s*/gi, '');
 
-      // Compute the output file name for the entry script.
-      // In your build, if MicroTSMRootAppBuildConfig.entryScript is "src/main.ts",
-      // the result is expected to be "js/main.js"
-      const entryBaseName = path.basename(entryScript, path.extname(entryScript)); // e.g., "main"
-      // This is used in the dynamic import below.
-      const entryOutFile = `/js/${entryBaseName}.js`;
+      /**
+       * Dynamically get the entry file out path that may be built with hashes.
+       */
+      const manifest = readManifest(viteConfig);
+      const entryOutFile =
+        (manifest && Object.values(manifest).find((ch) => ch.isEntry && ch.src == config.entryScript)?.file) ||
+        'js/main.js';
+
+      const swFileName = config.enableFileNameHashing ? getHashedSwSFileName() : SW_FILE_NAME;
 
       // Define the inline bootstrap code.
       // It registers the SW, waits until a controller is available (force reload if necessary),
       // posts the import map from the <script type="microtsm-importmap"> tag,
       // then dynamically imports the entry script.
-      const registerScript = `(${registerServiceWorker.toString()})();`
+      const registerScript = `(${registerServiceWorker.toString().replace('SW_FILE_NAME', swFileName)})();`
         .trim()
         .replace('bootstrapScript', '')
         .replace('https://entryjs.co', entryOutFile)
         .replace(/\/\/ @ts-ignore/g, '')
         .replace(/\/\* @vite-ignore \*\//g, '');
 
-      const registerScriptFileName = 'register-sw.js';
+      const registerScriptFileName = config.enableFileNameHashing
+        ? `register-sw-${createHash(registerScript)}.js`
+        : 'register-sw.js';
+
       const scriptOutPath = path.join(outDir, registerScriptFileName);
       fs.mkdirSync(path.dirname(scriptOutPath), { recursive: true });
       fs.writeFileSync(scriptOutPath, registerScript, { encoding: 'utf-8' });

@@ -58,6 +58,14 @@ function createInjectImportMapPlugin(config: MicroTSMRootAppBuildConfig, type: '
           if (Array.isArray(mergedImportMap)) {
             mergedImportMap = (Array.isArray(importMap) && mergedImportMap.concat(importMap)) || [];
           } else if ('imports' in importMap) {
+            const BUILD_TIMESTAMP = Date.now();
+            if (config.enableFileNameHashing) {
+              for (const map of Object.keys(importMap.imports)) {
+                if (importMap.imports[map].endsWith('.js'))
+                  importMap.imports[map] = importMap.imports[map] + `?built=${BUILD_TIMESTAMP}`;
+              }
+            }
+
             Object.assign(mergedImportMap.imports, importMap.imports);
           }
         });

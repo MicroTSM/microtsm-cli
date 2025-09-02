@@ -9,7 +9,7 @@ import {
   Plugin,
 } from 'vite';
 import path from 'path';
-import getAppName from '../utils/getAppName';
+import getAppInfo from '../utils/getAppInfo';
 import configFileNames from './configFileNames';
 import { configureDtsPlugin } from '../plugins/generateDts';
 
@@ -66,8 +66,9 @@ export default function defineConfig(config: UserConfigFnObject): UserConfigFnOb
 export default function defineConfig(config: UserConfigFnPromise): UserConfigFnPromise;
 export default function defineConfig(config: UserConfigFn): UserConfigFn;
 export default function defineConfig(userConfig: UserConfigExport): UserConfigExport {
-  const appName = getAppName();
-  process.env.__APP_NAME__ = appName;
+  const { name, version } = getAppInfo();
+  process.env.__APP_NAME__ = name;
+  process.env.__APP_VERSION__ = version;
 
   const generateConfig = (config: UserConfig): UserConfig => {
     const { external } = config.build?.rollupOptions ?? {};
@@ -76,7 +77,7 @@ export default function defineConfig(userConfig: UserConfigExport): UserConfigEx
 
     const builtConfig = viteDefineConfig({
       ...config,
-      define: { ...config.define, __APP_NAME__: JSON.stringify(appName) },
+      define: { ...config.define, __APP_NAME__: JSON.stringify(name) },
       build: {
         target: ['chrome64', 'firefox67', 'safari11.1', 'edge79'], // Minimum browser versions with native ES Modules support (see https://vite.dev/guide/build.html#browser-compatibility)
         manifest: 'manifest.json',

@@ -8,4 +8,5 @@ export default defineRootAppConfig({
       external: ['vue-router'],
     },
   },
+  enableFileNameHashing: false,
 });

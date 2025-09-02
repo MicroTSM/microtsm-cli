@@ -1,7 +1,7 @@
 export function registerServiceWorker(): void {
   if (navigator.serviceWorker) {
     navigator.serviceWorker
-      .register('/module-transform.sw.js', { type: 'module' })
+      .register('/SW_FILE_NAME', { type: 'module' })
       .then(async (registration) => {
         await new Promise((resolve) => {
           // @ts-ignore
@@ -25,7 +25,7 @@ export function registerServiceWorker(): void {
           setImportMap();
         }
 
-        // @ts-ignore
+        // @ts-ignore will be replaced during build
         import('https://entryjs.co').catch(console.error);
 
         // Reassign the import map when the window regains focus.

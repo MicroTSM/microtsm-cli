@@ -3,7 +3,7 @@ import { createLogger, InlineConfig } from 'vite';
 import { printHelpMessage, printStartupTime, printUrls } from '../server/logger';
 import configureHTTPSServer from '../server/configureHttps';
 import modifyResolvedUrls from '../server/modifyResolvedUrls';
-import getAppName from '../utils/getAppName';
+import getAppInfo from '../utils/getAppInfo';
 import { resolveConfigFileName } from '../config/resolveConfig';
 
 export default async function runPreviewServer(root: string, options: CLIPreviewOptions) {
@@ -33,7 +33,7 @@ export default async function runPreviewServer(root: string, options: CLIPreview
   const logger = createLogger(options.logLevel);
   const server = await preview(config);
 
-  printStartupTime(getAppName(), logger);
+  printStartupTime(getAppInfo().name, logger);
   modifyResolvedUrls(server);
 
   server.printUrls = () => printUrls(createLogger(options.logLevel), server.resolvedUrls!);
