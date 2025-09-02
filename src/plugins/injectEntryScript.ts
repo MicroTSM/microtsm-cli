@@ -57,7 +57,7 @@ function createInjectEntryScriptPlugin(config: MicroTSMRootAppBuildConfig, viteC
       const registerScript = `(${registerServiceWorker.toString().replace('SW_FILE_NAME', swFileName)})();`
         .trim()
         .replace('bootstrapScript', '')
-        .replace('https://entryjs.co', entryOutFile)
+        .replace('https://entryjs.co', `/${entryOutFile}`)
         .replace(/\/\/ @ts-ignore/g, '')
         .replace(/\/\* @vite-ignore \*\//g, '');
 
