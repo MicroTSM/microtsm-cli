@@ -194,7 +194,12 @@ cli
         include: ['**/*.{vue,html,js,ts,jsx,tsx,css,scss,sass,less,stylus,postcss,json,wasm,mjs,cjs,tsbuildinfo}'],
         exclude: ['node_modules/**', '.git/**', '.hg/**', '.svn/**'],
       };
-      const buildOptions: CLIBuildOptions = { watch, sourcemap: false, clearScreen: true, mode: 'development' };
+      const buildOptions: CLIBuildOptions = {
+        watch,
+        sourcemap: false,
+        clearScreen: true,
+        mode: options.mode,
+      };
       const buildCommand = cli.commands.find((c) => c.name === 'build');
       buildCommand?.commandAction?.(root, buildOptions);
 
