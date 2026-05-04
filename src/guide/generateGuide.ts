@@ -5,7 +5,17 @@ import { fileURLToPath } from 'url';
 
 const getTemplatePath = (fileName: string) => {
   const __dirname = path.dirname(fileURLToPath(import.meta.url));
-  return path.resolve(__dirname, '../../static/templates/' + fileName);
+  const paths = [
+    path.resolve(__dirname, '../../static/templates/' + fileName), // Dev
+    path.resolve(__dirname, '../templates/' + fileName), // Prod (relative to dist/bin)
+    path.resolve(__dirname, '../../templates/' + fileName), // Prod (relative to dist/chunks)
+  ];
+
+  for (const p of paths) {
+    if (fs.existsSync(p)) return p;
+  }
+
+  return paths[1];
 };
 
 export async function generateIndexPage(config: { entryFilePath: string; outDir?: string }) {
