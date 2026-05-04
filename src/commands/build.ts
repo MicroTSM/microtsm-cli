@@ -19,11 +19,13 @@ export default async function buildCommand(
 
   if (options.standalone) {
     delete config.build?.lib;
-    if (config.build && config.build.rollupOptions) {
-      config.build.rollupOptions.input = 'index.html';
+    if (config.build && (config.build.rolldownOptions || config.build.rollupOptions)) {
+      const options = (config.build.rolldownOptions || config.build.rollupOptions) as any;
+      if (options) options.input = 'index.html';
     }
 
-    delete config.build?.rollupOptions?.external;
+    if (config.build?.rolldownOptions) delete (config.build.rolldownOptions as any).external;
+    if (config.build?.rollupOptions) delete config.build.rollupOptions.external;
   }
 
   if (!options.standalone) installPlugins(['styleInject'], config);
@@ -40,6 +42,8 @@ export default async function buildCommand(
     ...(options.app ? { builder: {} } : {}),
     configFile: false, // To tell vite to not manually load the config file, because we already did it
   };
+
+  console.log('Inline Config: ', inlineConfig);
 
   const builder = await createBuilder(inlineConfig, true);
   const prefix = 'MicroTSM v' + getVersion();

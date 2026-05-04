@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url';
 
 const getTemplatePath = (fileName: string) => {
   const __dirname = path.dirname(fileURLToPath(import.meta.url));
-  return path.resolve(__dirname, '../templates/' + fileName);
+  return path.resolve(__dirname, '../../static/templates/' + fileName);
 };
 
 export async function generateIndexPage(config: { entryFilePath: string; outDir?: string }) {

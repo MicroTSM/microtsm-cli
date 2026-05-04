@@ -82,6 +82,7 @@ export default function defineConfig(userConfig: UserConfigExport): UserConfigEx
         target: ['chrome64', 'firefox67', 'safari11.1', 'edge79'], // Minimum browser versions with native ES Modules support (see https://vite.dev/guide/build.html#browser-compatibility)
         manifest: 'manifest.json',
         sourcemap: false,
+        outDir: 'dist',
         ...config.build,
         lib: {
           entry: './src/main.ts',

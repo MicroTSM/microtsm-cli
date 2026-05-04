@@ -1,3 +1,4 @@
+/// <reference types="vitest" />
 import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
 import { readFileSync } from 'fs';
@@ -24,7 +25,9 @@ export default defineConfig({
     __CLOUDFLARE_POLYFILL_URL__: JSON.stringify(
       'https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?version=4.8.0',
     ),
-    __MODULE_LOADER_URL__: JSON.stringify('https://cdn.jsdelivr.net/npm/microtsm@{VERSION}/dist/module-loader/index.js'),
+    __MODULE_LOADER_URL__: JSON.stringify(
+      'https://cdn.jsdelivr.net/npm/microtsm@{VERSION}/dist/module-loader/index.js',
+    ),
     __MICROTSM_URL__: JSON.stringify('https://cdn.jsdelivr.net/npm/microtsm@{VERSION}/dist/'),
     __MICROTSM_VERSION__: JSON.stringify('0.0.57'),
   },
@@ -32,11 +35,13 @@ export default defineConfig({
     outDir: 'dist',
     emptyOutDir: true,
     minify: false,
+    ssr: true,
     lib: {
       entry: resolve(__dirname, 'src/main.ts'),
       formats: ['es'],
     },
-    rollupOptions: {
+    rolldownOptions: {
+      platform: 'node',
       input: {
         'bin/cli': resolve(__dirname, 'bin/microtsm-cli.ts'),
         'main': resolve(__dirname, 'src/main.ts'),
@@ -47,7 +52,13 @@ export default defineConfig({
         entryFileNames: '[name].js',
         chunkFileNames: 'chunks/[name]-[hash].js',
       },
-      external: ['crypto', 'typescript', ...nodeBuiltInModules, ...Object.keys(pkg.dependencies || {})],
+      external: [
+        'crypto',
+        'typescript',
+        ...nodeBuiltInModules,
+        ...Object.keys(pkg.dependencies || {}),
+        ...Object.keys(pkg.devDependencies || {}),
+      ],
     },
   },
   publicDir: 'static',
