@@ -16,7 +16,7 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "esModuleInterop": true,
-    "types": ["node", "mocha", "vite/client"]
+    "types": ["node", "vitest", "vite/client"]
   },
-  "include": ["src", "bin"]
+  "include": ["src", "bin", "vite.config.ts"]
 }

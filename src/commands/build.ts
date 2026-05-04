@@ -43,8 +43,6 @@ export default async function buildCommand(
     configFile: false, // To tell vite to not manually load the config file, because we already did it
   };
 
-  console.log('Inline Config: ', inlineConfig);
-
   const builder = await createBuilder(inlineConfig, true);
   const prefix = 'MicroTSM v' + getVersion();
 

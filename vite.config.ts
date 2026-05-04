@@ -20,6 +20,8 @@ const nodeBuiltInModules = [
   'node:perf_hooks',
 ];
 
+const externalModules = ['crypto', 'typescript', ...nodeBuiltInModules, ...Object.keys(pkg.dependencies || {})];
+
 export default defineConfig({
   define: {
     __CLOUDFLARE_POLYFILL_URL__: JSON.stringify(
@@ -52,8 +54,12 @@ export default defineConfig({
         entryFileNames: '[name].js',
         chunkFileNames: 'chunks/[name]-[hash].js',
       },
-      external: ['crypto', 'typescript', ...nodeBuiltInModules, ...Object.keys(pkg.dependencies || {})],
+      external: externalModules,
     },
+  },
+  ssr: {
+    noExternal: true,
+    external: externalModules,
   },
   publicDir: 'static',
   plugins: [
